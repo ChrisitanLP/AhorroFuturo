@@ -1,0 +1,52 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Mi Panel | Ahorro Futuro{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="border-bottom pb-2">Panel de Cliente</h2>
+        <p class="lead">Bienvenido(a) {{ user.first_name }}, accede a nuestros simuladores desde aquí.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>Simulador de Créditos</h5>
+            </div>
+            <div class="card-body">
+                <p>Simula un crédito y obtén tu tabla de amortización personalizada con diferentes sistemas de pago.</p>
+                <a href="#" class="btn btn-success">Simular Crédito</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-piggy-bank me-2"></i>Simulador de Inversiones</h5>
+            </div>
+            <div class="card-body">
+                <p>Calcula el rendimiento de tu inversión según diferentes plazos y montos.</p>
+                <a href="#" class="btn btn-info">Simular Inversión</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Mis Simulaciones Recientes</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">No tienes simulaciones recientes.</p>
+                <p>Las simulaciones que guardes aparecerán aquí para que puedas consultarlas más tarde.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

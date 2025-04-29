@@ -1,0 +1,272 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block title %}Contacto | Ahorro Futuro{% endblock %}
+
+{% block extra_css %} {% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="contact-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="mb-4 hero-title"><span style="color: var(--pichincha-blue);">Estamos para ayudarte</span></h1>
+                <p class="lead mb-4 hero-subtitle">Nuestro equipo está listo para resolver tus dudas y brindarte la mejor asesoría financiera</p>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block text-center">
+                <div class="simulador_ilustracion">
+                    <img src="{% static 'assets/img/Banners/contacto_banner.png' %}" alt="Equipo Ahorro Futuro" style="max-width: 90%;">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Info Section -->
+<section class="contact-info-section">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Contactanos</h2>
+        </div>
+        <div class="row">
+            <div class="col-lg-7 mb-5 mb-lg-0">
+                <div class="contact-form">
+                    <h2 class="mb-4">Envíanos un mensaje</h2>
+                    <form action="{% url 'contacto' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="name" class="form-label">Nombre completo</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="email" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="phone" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="subject" class="form-label">Asunto</label>
+                                <select class="form-select custom-select" id="subject" name="subject" required>
+                                    <option value="" selected disabled>Selecciona una opción</option>
+                                    <option value="Información general">Información general</option>
+                                    <option value="Inversiones">Inversiones</option>
+                                    <option value="Cuentas de ahorro">Cuentas de ahorro</option>
+                                    <option value="Préstamos">Préstamos</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="form-label">Mensaje</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
+                            <label class="form-check-label" for="privacy">
+                                He leído y acepto la <a href="" class="text-decoration-none highlight-text">política de privacidad</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-yellow">Enviar mensaje</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="contact-info">
+                    <h2 class="mb-4">Información de contacto</h2>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h4 class="contact-info-header">Dirección</h4>
+                            <p class="contact-info-text">Av. Reforma 222, Col. Juárez<br>Ciudad de México, CP 06600</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <h4 class="contact-info-header">Teléfono</h4>
+                            <p class="contact-info-text">+52 (55) 1234 5678</p>
+                            <p class="contact-info-text">Lunes a Viernes: 9:00 - 18:00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4 class="contact-info-header">Correo electrónico</h4>
+                            <p class="contact-info-text">contacto@ahorrofuturo.com</p>
+                            <p class="contact-info-text">soporte@ahorrofuturo.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div>
+                            <h4 class="contact-info-header">Atención a clientes</h4>
+                            <p class="contact-info-text">800 123 4567</p>
+                            <p class="contact-info-text">24/7 para emergencias</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section py-5">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Nuestra Ubicación</h2>
+        </div>
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.661919606271!2d-99.16978708446301!3d19.42789198688482!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1ff35d2cbc62b%3A0x3feaded9fdade414!2sAv.%20Paseo%20de%20la%20Reforma%20222%2C%20Ju%C3%A1rez%2C%20Cuauht%C3%A9moc%2C%2006600%20Ciudad%20de%20M%C3%A9xico%2C%20CDMX!5e0!3m2!1ses-419!2smx!4v1619457937919!5m2!1ses-419!2smx" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Preguntas Frecuentes</h2>
+        </div>
+        <div class="accordion" id="contactFAQ">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        ¿Cuánto tiempo tarda en responderse una solicitud?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#contactFAQ">
+                    <div class="accordion-body">
+                        Nuestro equipo de atención al cliente se compromete a responder todas las solicitudes en un plazo máximo de 24 horas hábiles. Para casos urgentes, recomendamos comunicarse directamente a nuestra línea de atención telefónica.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        ¿Cómo puedo agendar una cita con un asesor financiero?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#contactFAQ">
+                    <div class="accordion-body">
+                        Puede agendar una cita con uno de nuestros asesores financieros a través de nuestro formulario de contacto seleccionando "Asesoría financiera" en el asunto, llamando a nuestra línea de atención o visitando cualquiera de nuestras sucursales en horario de oficina.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        ¿Qué documentos necesito para abrir una cuenta?
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#contactFAQ">
+                    <div class="accordion-body">
+                        Para abrir una cuenta necesitará una identificación oficial vigente, comprobante de domicilio reciente (no mayor a 3 meses), RFC con homoclave y CURP. Para cuentas empresariales se requiere documentación adicional que puede consultar en nuestra sección de Productos o contactando directamente con un asesor.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        ¿Cómo reporto un problema con mi tarjeta o cuenta?
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#contactFAQ">
+                    <div class="accordion-body">
+                        Para reportar cualquier problema con su tarjeta o cuenta, debe comunicarse inmediatamente a nuestra línea de atención a clientes disponible 24/7 al 800 123 4567. También puede visitar cualquiera de nuestras sucursales en horario de atención o enviar un correo a soporte@ahorrofuturo.com especificando su situación.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFive">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        ¿Ofrecen asesoría en inversiones internacionales?
+                    </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#contactFAQ">
+                    <div class="accordion-body">
+                        Sí, contamos con un equipo especializado en inversiones internacionales. Puede solicitar una asesoría personalizada a través de nuestro formulario de contacto seleccionando "Inversiones" en el asunto o llamando directamente a nuestra línea especializada al +52 (55) 5678 9012.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="mb-4">¿Necesitas atención inmediata?</h2>
+        <p class="mb-5">Nuestro equipo de soporte está disponible 24/7 para ayudarte con cualquier emergencia financiera.</p>
+        <div>
+            <a href="tel:8001234567" class="btn btn-outline-yellow btn-lg mb-3"><i class="fas fa-phone-alt me-2"></i>Llama ahora</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+    
+    // Success message for form submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        
+        if (status === 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                <strong>¡Mensaje enviado correctamente!</strong> Nos pondremos en contacto contigo en breve.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            const formElement = document.querySelector('.contact-form');
+            formElement.insertBefore(alertDiv, formElement.firstChild);
+            
+            // Auto close after 5 seconds
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert');
+                if (alertElement) {
+                    const bsAlert = new bootstrap.Alert(alertElement);
+                    bsAlert.close();
+                }
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

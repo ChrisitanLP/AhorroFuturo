@@ -1,0 +1,89 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Iniciar Sesión | Ahorro Futuro{% endblock %}
+
+{% block extra_css %} {% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 login-page">
+        <!-- Columna izquierda con información -->
+        <div class="col-lg-6 login-left">
+            <a class="" href="{% url 'inicio' %}">
+                <div class="logo-container">
+                    <img src="{% static 'assets/img/Logos/logotipo.png' %}" alt="Logo" onerror="this.src='https://via.placeholder.com/200x50?text=Simulador+Financiero'">
+                </div>
+            </a>
+            
+            <div class="login-info">
+                <h2>Tu puerta de entrada a decisiones inteligentes.</h2>
+                
+                <div class="login-illustration">
+                    <!-- Aquí iría la ilustración del personaje -->
+                    <img src="{% static 'assets/img/Banners/login_img.png' %}" alt="Ilustracion">
+                </div>
+                
+                <div class="login-steps">
+                    <div class="login-step">
+                        <span class="step-number">01.</span>
+                        <span class="step-text">Accede a herramientas que optimizan tu futuro financiero.</span>
+                    </div>
+                    <div class="login-step">
+                        <span class="step-number">02.</span>
+                        <span class="step-text">Comienza hoy a planificar con claridad y seguridad.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Columna derecha con el formulario de login -->
+        <div class="col-lg-6 login-right">
+            <div class="login-box">
+                <h1 class="login-heading">Bienvenido a tu Banca Online</h1>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label"></label>
+                        {{ form.username|as_crispy_field }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label"></label>
+                        {{ form.password|as_crispy_field }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-login">
+                        Ingresar
+                    </button>
+                </form>
+                
+                <div class="account-options">
+                    <a href="#" class="account-option">
+                        <i class="fas fa-lock"></i>
+                        <span class="option-text">¿Cuenta bloqueada?</span>
+                        <span class="option-action">Recupera aquí</span>
+                    </a>
+                    <a href="{% url 'registro_cliente' %}" class="account-option">
+                        <i class="fas fa-user"></i>
+                        <span class="option-text">¿Usuario nuevo?</span>
+                        <span class="option-action">Regístrate ahora</span>
+                    </a>
+                </div>
+                
+                <div class="terms-footer">
+                    <a href="#" class="terms-link">Términos de uso</a> © {% now "Y" %} Ahorro Futuro. Todos los derechos reservados.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'assets/js/login.js' %}"></script>
+{% endblock %}

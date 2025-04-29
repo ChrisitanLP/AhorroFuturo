@@ -1,0 +1,100 @@
+/* Estilos para el modal de tabla de amortización */
+.modal-xl {
+    max-width: 90%;
+}
+
+.modal-header{
+    text-align: center;
+    margin: 1px 0;
+}
+
+.modal-litle-section{
+    text-align: center;
+    margin: 1px 0;
+}
+
+.content-modal{
+    padding: 15px 55px;
+}
+
+#tablaAmortizacionModal .modal-header {
+    border-bottom: 2px solid var(--pichincha-blue);
+}
+
+#tablaAmortizacionModal .modal-footer {
+    border-top: 1px solid #eee;
+}
+
+#tabla-amortizacion thead th {
+    background-color: var(--pichincha-blue);
+    color: white;
+    font-weight: 500;
+    vertical-align: middle;
+}
+
+#tabla-amortizacion {
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+#tabla-amortizacion tbody tr:hover {
+    background-color: rgba(41, 128, 185, 0.05);
+}
+
+#tabla-amortizacion tbody tr td {
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.card .card-title {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.text-muted.small {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Agregamos un scrollbar estilizado para las tablas grandes */
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--pichincha-blue) #f0f0f0;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: var(--pichincha-blue);
+    border-radius: 20px;
+}
+
+/* Estilos para los botones del modal */
+#btn-descargar-tabla {
+    background-color: var(--pichincha-yellow);
+    border: none;
+    color: var(--pichincha-blue);
+    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#btn-descargar-tabla:hover {
+    background-color: var(--pichincha-yellow-hover);
+    color: var(--pichincha-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}

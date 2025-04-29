@@ -1,0 +1,287 @@
+{% extends 'base_page.html' %}
+{% load static %}
+
+{% block extra_css %} {% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content">
+                <h1 class="hero-title"><span style="color: var(--pichincha-blue);">Construimos juntos tu futuro financiero</span></h1>
+                <p class="hero-subtitle">En Ahorro Futuro, te ofrecemos soluciones financieras personalizadas para ayudarte a alcanzar tus metas y asegurar tu bienestar económico.</p>
+                <div class="d-flex flex-wrap">
+                    <a href="{% url 'nosotros' %}" class="btn btn-blue btn-lg me-3 mb-3">
+                         Conoce más
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <img src="{% static 'assets/img/Banners/first_banner.png' %}" alt="Ilustracion">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Acceso rápido / Features Section -->
+<section class="feature-section">
+    <div class="container">
+        <h2 class="section-title">Nuestros Servicios</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3 class="feature-title">Crédito Hipotecario</h3>
+                    <p>Financia la casa de tus sueños con nuestras tasas competitivas y plazos flexibles adaptados a tu capacidad de pago.</p>
+                    
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Inversiones</h3>
+                    <p>Haz crecer tu dinero con nuestras alternativas de inversión que se adaptan a tu perfil y objetivos financieros.</p>
+                    
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3 class="feature-title">Tarjetas de Crédito</h3>
+                    <p>Disfruta de beneficios exclusivos, seguridad y flexibilidad con nuestras tarjetas diseñadas para cada estilo de vida.</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6 stat-item">
+                <div class="stat-number" id="clientCount">2K+</div>
+                <div class="stat-title">Clientes satisfechos</div>
+            </div>
+            <div class="col-md-3 col-6 stat-item">
+                <div class="stat-number" id="yearsCount">15+</div>
+                <div class="stat-title">Años de experiencia</div>
+            </div>
+            <div class="col-md-3 col-6 stat-item">
+                <div class="stat-number" id="branchCount">2+</div>
+                <div class="stat-title">Sucursales</div>
+            </div>
+            <div class="col-md-3 col-6 stat-item">
+                <div class="stat-number" id="satisfaction">90%</div>
+                <div class="stat-title">Satisfacción</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Productos Destacados -->
+<section class="products-section">
+    <div class="container">
+        <h2 class="section-title">Productos Destacados</h2>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="product-card">
+                    <div class="product-img" style="background-image: url('{% static "assets/img/Banca-Personas.png" %}');">
+                        <div class="product-overlay">
+                            <h4>Crédito Personal</h4>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <p>Obtén el financiamiento que necesitas para tus proyectos personales con tasas competitivas y aprobación rápida.</p>
+                        <ul class="benefits-list mb-4">
+                            <li><i class="fas fa-check-circle"></i> Montos desde $1,000 hasta $50,000</li>
+                            <li><i class="fas fa-check-circle"></i> Plazos de 12 a 60 meses</li>
+                            <li><i class="fas fa-check-circle"></i> Sin comisiones ocultas</li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="product-card">
+                    <div class="product-img" style="background-image: url('{% static "assets/img/ahorros_premium.png" %}');">
+                        <div class="product-overlay">
+                            <h4>Cuenta de Ahorros Premium</h4>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <p>Maximiza tus ahorros con nuestra cuenta que te ofrece una de las tasas más atractivas del mercado.</p>
+                        <ul class="benefits-list mb-4">
+                            <li><i class="fas fa-check-circle"></i> Tasa de interés preferencial</li>
+                            <li><i class="fas fa-check-circle"></i> Sin costo de mantenimiento</li>
+                            <li><i class="fas fa-check-circle"></i> Acceso a banca en línea 24/7</li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="product-card">
+                    <div class="product-img" style="background-image: url('{% static "assets/img/fondos-inversion.jpg" %}');">
+                        <div class="product-overlay">
+                            <h4>Fondo de Inversión</h4>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <p>Diversifica tu portafolio con nuestros fondos de inversión administrados por expertos del mercado financiero.</p>
+                        <ul class="benefits-list mb-4">
+                            <li><i class="fas fa-check-circle"></i> Monto mínimo accesible</li>
+                            <li><i class="fas fa-check-circle"></i> Diversificación de portafolio</li>
+                            <li><i class="fas fa-check-circle"></i> Administración profesional</li>
+                        </ul>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Awards Banner -->
+<div class="awards-banner">
+    <div class="container">
+        <div class="awards-container">
+            <div class="award-item">
+                <i class="fas fa-trophy award-icon"></i>
+                <div class="award-text">
+                    <div class="award-name">Mejor Banco Digital 2024</div>
+                    <div>Financial Times</div>
+                </div>
+            </div>
+            <div class="award-item">
+                <i class="fas fa-medal award-icon"></i>
+                <div class="award-text">
+                    <div class="award-name">Excelencia en Servicio al Cliente</div>
+                    <div>Banking Association</div>
+                </div>
+            </div>
+            <div class="award-item">
+                <i class="fas fa-award award-icon"></i>
+                <div class="award-text">
+                    <div class="award-name">Institución Financiera Innovadora</div>
+                    <div>FinTech Awards 2023</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Calculator Section -->
+<section class="feature-section">
+    <div class="container">
+        <h2 class="section-title">Planifica tu futuro financiero</h2>
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="calculator-form">
+                    <div class="feature-section-ilustration">
+                        <img src="{% static 'assets/img/second_banner.jpg' %}" alt="Ilustracion">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="p-4 rounded bg-light">
+                    <h3 class="mb-4">¿Por qué elegir Ahorro Futuro?</h3>
+                    <ul class="benefits-list">
+                        <li><i class="fas fa-shield-alt"></i> <strong>Seguridad garantizada</strong> para todas tus transacciones</li>
+                        <li><i class="fas fa-bolt"></i> <strong>Procesos rápidos</strong> con respuesta en menos de 24 horas</li>
+                        <li><i class="fas fa-hand-holding-usd"></i> <strong>Tasas competitivas</strong> que se adaptan a tu perfil</li>
+                        <li><i class="fas fa-user-tie"></i> <strong>Asesoría personalizada</strong> por expertos financieros</li>
+                        <li><i class="fas fa-mobile-alt"></i> <strong>Banca digital</strong> disponible 24/7 en cualquier dispositivo</li>
+                        <li><i class="fas fa-award"></i> <strong>17 años de experiencia</strong> brindando soluciones financieras</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="container">
+        <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Gracias a Ahorro Futuro pude financiar la casa de mis sueños con un crédito hipotecario que se adaptó perfectamente a mi presupuesto.</p>
+                    <div class="testimonial-author">
+                        <img src="{% static 'assets/img/Testimonial/testimonial_1.jpg' %}" alt="María Rodríguez" class="testimonial-avatar">
+                        <div>
+                            <h5 class="testimonial-name">María Rodríguez</h5>
+                            <p class="testimonial-position">Cliente desde 2018</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">La asesoría financiera que recibí me ayudó a entender mejor cómo invertir mi dinero. Ahora mis ahorros crecen constantemente.</p>
+                    <div class="testimonial-author">
+                        <img src="{% static 'assets/img/Testimonial/testimonio_2.jpg' %}" alt="Carlos Méndez" class="testimonial-avatar">
+                        <div>
+                            <h5 class="testimonial-name">Carlos Méndez</h5>
+                            <p class="testimonial-position">Cliente desde 2020</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">El proceso para obtener mi crédito personal fue rápido y sencillo. La atención al cliente fue excepcional en todo momento.</p>
+                    <div class="testimonial-author">
+                        <img src="{% static 'assets/img/Testimonial/testimonio_3.jpg' %}" alt="Ana Gómez" class="testimonial-avatar">
+                        <div>
+                            <h5 class="testimonial-name">Ana Gómez</h5>
+                            <p class="testimonial-position">Cliente desde 2019</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2 class="mb-4">¿Listo para comenzar tu camino hacia la libertad financiera?</h2>
+        <p class="mb-5">Nuestros asesores financieros están disponibles para guiarte paso a paso.</p>
+        <div>
+            <a href="{% url 'registro_cliente' %}" class="btn btn-yellow btn-lg me-3 mb-3">Abrir cuenta</a>
+            <a href="{% url 'contacto' %}" class="btn btn-outline-yellow btn-lg mb-3">Contactar un asesor</a>
+        </div>
+    </div>
+</section>
+
+<!-- App Section -->
+<section class="app-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="mb-4">Gestiona tus finanzas desde cualquier lugar</h2>
+                <p class="mb-4">Descarga nuestra aplicación móvil y accede a todos nuestros servicios con solo un toque. Revisa tus cuentas, realiza transferencias, paga servicios y mucho más.</p>
+                <div class="app-badges">
+                    <a href="#"><img src="{% static 'assets/img/Logos/app_store.png' %}" alt="App Store"></a>
+                    <a href="#"><img src="{% static 'assets/img/Logos/google_play.png' %}" alt="Google Play"></a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block text-center">
+                <img src="{% static 'assets/img/mockup.png' %}" alt="App Móvil" style="max-width: 55%;">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Registro de Cliente | Ahorro Futuro{% endblock %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 login-page">
+        <!-- Columna izquierda con información -->
+        <div class="col-lg-6 login-left">
+            <a class="" href="{% url 'inicio' %}">
+                <div class="logo-container">
+                    <img src="{% static 'assets/img/Logos/logotipo.png' %}" alt="Logo" onerror="this.src='https://via.placeholder.com/200x50?text=Simulador+Financiero'">
+                </div>
+            </a>
+            
+            <div class="login-info">
+                <h2>Comienza tu acceso seguro a la plataforma.</h2>
+                
+                <div class="login-illustration">
+                    <!-- Aquí iría la ilustración del personaje -->
+                    <img src="{% static 'assets/img/Banners/register_img.png' %}" alt="Ilustracion">
+                </div>
+                
+                <div class="login-steps">
+                    <div class="login-step">
+                        <span class="step-number">01.</span>
+                        <span class="step-text">Confirma tu información personal.</span>
+                    </div>
+                    <div class="login-step">
+                        <span class="step-number">02.</span>
+                        <span class="step-text">Establece tus credenciales de ingreso.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Columna derecha con el formulario de login -->
+        <div class="col-lg-6 login-right">
+            <div class="login-box">
+                <h1 class="login-heading">Registrate ahora en nuestra plataforma</h1>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.username|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            {{ form.telefono|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.password1|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.password2|as_crispy_field }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-login">
+                        Registrarse
+                    </button>
+                </form>
+                <div class="account-options">
+                    <a href="{% url 'login' %}" class="account-option">
+                        <i class="fas fa-user"></i>
+                        <span class="option-text">¿Ya tienes una cuenta?</span>
+                        <span class="option-action">Inicia sesión aquí</spam>
+                    </a>
+                </div>
+                <div class="terms-footer">
+                    <a href="#" class="terms-link">Términos de uso</a> © {% now "Y" %} Ahorro Futuro. Todos los derechos reservados.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'assets/js/register.js' %}"></script>
+{% endblock %}

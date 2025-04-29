@@ -1,0 +1,158 @@
+:root {
+    --pichincha-yellow: rgb(255, 221, 0);
+    --pichincha-yellow-hover: #f3d300;
+    --pichincha-blue: #003366;
+    --pichincha-light-blue: #1a4d80;
+    --pichincha-text: #333333;
+    --pichincha-gray: #f5f7fa;
+    --pichincha-dark-gray: #4a4a4a;
+}
+
+body {
+    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+    background-color: #ffffff;
+    color: var(--pichincha-text);
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #ffffff !important;
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 80px;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    height: 45px;
+    margin-right: 12px;
+}
+
+.navbar-brand span {
+    color: var(--pichincha-blue);
+    font-size: 22px;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    color: var(--pichincha-text) !important;
+    font-weight: 500;
+    padding: 0.6rem 1.2rem !important;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--pichincha-blue) !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background-color: var(--pichincha-yellow);
+    bottom: 0;
+    color: white;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 70%;
+}
+
+/* Button Styles */
+.btn-yellow {
+    background-color: var(--pichincha-yellow);
+    border: none;
+    color: var(--pichincha-blue);
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-yellow:hover {
+    background-color: var(--pichincha-yellow-hover);
+    color: var(--pichincha-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-outline-blue {
+    border: 2px solid var(--pichincha-blue);
+    color: var(--pichincha-blue);
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.btn-outline-blue:hover {
+    background-color: var(--pichincha-blue);
+    color: white;
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--pichincha-gray);
+    color: black;
+    padding: 10px 0 20px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(65, 64, 64, 0.1);
+    padding-top: 20px;
+    margin-top: 40px;
+    text-align: center;
+    font-size: 14px;
+    color: rgba(73, 73, 73, 0.7);
+}
+
+.security-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin: 0 10px;
+    font-size: 12px;
+}
+
+.security-badge i {
+    margin-right: 6px;
+    color: var(--pichincha-yellow);
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 0;
+    }
+    
+    .navbar-brand img {
+        height: 35px;
+    }
+    
+    footer {
+        text-align: center;
+    }
+    
+    .footer-title {
+        margin-top: 30px;
+    }
+    
+    .footer-social {
+        justify-content: center;
+    }
+}

@@ -1,0 +1,62 @@
+[
+    {
+        "model": "creditos.tipocredito",
+        "pk": 1,
+        "fields": {
+            "nombre": "Vivienda de interés social",
+            "tasa_interes_referencial": 4.99,
+            "plazo_minimo": 60,
+            "plazo_maximo": 300,
+            "monto_minimo": 27058.00,
+            "monto_maximo": 130000.00
+        }
+    },
+    {
+        "model": "creditos.tipocredito",
+        "pk": 2,
+        "fields": {
+            "nombre": "Línea abierta",
+            "tasa_interes_referencial": 8.95,
+            "plazo_minimo": 12,
+            "plazo_maximo": 120,
+            "monto_minimo": 5000.00,
+            "monto_maximo": 100000.00
+        }
+    },
+    {
+        "model": "creditos.tipocredito",
+        "pk": 3,
+        "fields": {
+            "nombre": "Hipotecario vivienda",
+            "tasa_interes_referencial": 7.75,
+            "plazo_minimo": 36,
+            "plazo_maximo": 300,
+            "monto_minimo": 50000.00,
+            "monto_maximo": 500000.00
+        }
+    },
+    {
+        "model": "creditos.tipocredito",
+        "pk": 4,
+        "fields": {
+            "nombre": "Vivienda de interés público",
+            "tasa_interes_referencial": 4.87,
+            "plazo_minimo": 60,
+            "plazo_maximo": 240,
+            "monto_minimo": 30000.00,
+            "monto_maximo": 90000.00
+        }
+    },
+    {
+        "model": "creditos.tipocredito",
+        "pk": 5,
+        "fields": {
+            "nombre": "Educación superior",
+            "tasa_interes_referencial": 6.50,
+            "plazo_minimo": 24,
+            "plazo_maximo": 120,
+            "monto_minimo": 3000.00,
+            "monto_maximo": 50000.00
+        }
+    }
+]

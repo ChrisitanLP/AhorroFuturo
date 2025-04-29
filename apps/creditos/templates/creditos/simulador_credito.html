@@ -1,0 +1,803 @@
+{% extends 'base_page.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Simulador de Crédito | Ahorro Futuro{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'styles/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="simulador-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 simulador-content">
+                <h1 class="simulador-title"><span style="color: var(--pichincha-blue);">Simulador de Crédito</span></h1>
+                <p class="simulador-subtitle">Calcula tu cuota mensual basada en el valor del préstamo que deseas solicitar.</p>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="simulador_ilustracion">
+                    <img src="{% static 'assets/img/Banners/simulador_banner.png' %}" alt="Ilustracion">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container my-4">
+    <h1 class="text-center mb-4 detalle_credito-title">¿Qué crédito necesitas?</h1>
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-body">
+                <form id="formulario-simulador">
+                    <div class="row mb-4">
+                        <div class="col-md-6 mx-auto">
+                            <div class="form-group tipo-credito-select">
+                                <select id="tipo_credito" class="form-control form-select">
+                                    <option value="" disabled selected>Selecciona un tipo de crédito</option>
+                                    {% for tipo in tipos_credito %}
+                                        <option value="{{ tipo.id }}" 
+                                            data-tasa="{{ tipo.tasa_interes_referencial }}"
+                                            data-min-monto="{{ tipo.monto_minimo }}"
+                                            data-max-monto="{{ tipo.monto_maximo }}"
+                                            data-min-plazo="{{ tipo.plazo_minimo }}"
+                                            data-max-plazo="{{ tipo.plazo_maximo }}">
+                                            {{ tipo.nombre }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="datos-simulacion">
+                        <div class="row">
+                            <div class="col-md-12 text-center mb-4">
+                                <h5>Ingresa los siguientes datos para empezar la simulación</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label for="monto_vivienda">¿Cuánto cuesta la vivienda?</label>
+                                    <input type="text" id="monto_vivienda" class="form-control numero-formato" placeholder="Ej: $100000">
+                                    <small class="form-text text-muted" id="min_monto_vivienda">Min: $27,058.00</small>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label for="monto_prestamo">¿Cuánto dinero necesitas que te prestemos?</label>
+                                    <input type="text" id="monto_prestamo" class="form-control numero-formato" placeholder="Ej: $80000">
+                                    <small class="form-text text-muted" id="min_monto_prestamo">Min: $27,058.00</small>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label for="plazo">¿En cuánto tiempo quieres pagarlo?</label>
+                                    <select id="plazo" class="form-control form-select">
+                                        <option value="" disabled selected>Selecciona tu plazo</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label class="label-credito">¿Cómo quieres pagar tus intereses?</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card metodo-card mb-2" id="metodo-frances">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Método Francés</h6>
+                                                    <p class="card-text">Cuotas se mantienen fijas en el tiempo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card metodo-card mb-2" id="metodo-aleman">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Método Alemán</h6>
+                                                    <p class="card-text">Cuotas variables que decrecen en el tiempo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="metodo_pago" value="">
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="button" id="btn-simular" class="btn btn-yellow btn-block">Simular</button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card resumen-pago">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Tus pagos mensuales serán</h5>
+                                        
+                                        <div class="row text-center mb-3">
+                                            <div class="col">
+                                                <div class="valor-pago">$0.00</div>
+                                                <div class="concepto-pago">Capital</div>
+                                            </div>
+                                            <div class="col-1 d-flex align-items-center justify-content-center">+</div>
+                                            <div class="col">
+                                                <div class="valor-pago">$0.00</div>
+                                                <div class="concepto-pago">Interés</div>
+                                            </div>
+                                            <div class="col-1 d-flex align-items-center justify-content-center">+</div>
+                                            <div class="col">
+                                                <div class="valor-pago">$0.00</div>
+                                                <div class="concepto-pago">Seguro</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="total-mensual text-center mb-3">
+                                            <h2>$0.00</h2>
+                                            <p class="info-plazo">Durante 0 meses (0 años)</p>
+                                            <p class="info-tasa">Con una tasa de interés referencial 0%</p>
+                                        </div>
+                                        
+                                        <div class="detalle-credito">
+                                            <h6>Detalle de tu crédito</h6>
+                                            <div class="row">
+                                                <div class="col-7">Capital:</div>
+                                                <div class="col-5 text-end">$0.00</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-7">Total de interés:</div>
+                                                <div class="col-5 text-end">$0.00</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-7">Total seguro de desgravamen:</div>
+                                                <div class="col-5 text-end">$0.00</div>
+                                            </div>
+                                            <div class="row fw-bold mt-2">
+                                                <div class="col-7">Total a pagar:</div>
+                                                <div class="col-5 text-end">$0</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4 text-center">
+                                            <p class="disclaimer small">Valores referenciales, no son considerados como una oferta formal de préstamo. La oferta definitiva está sujeta al cumplimiento de las condiciones y políticas referentes a capacidad de pago.</p>
+                                            <a href="#" id="ver-tabla-amortizacion" class="btn btn-outline-blue btn-sm">Ver tabla de amortización</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para la tabla de amortización -->
+<div class="modal fade" id="tablaAmortizacionModal" tabindex="-1" aria-labelledby="tablaAmortizacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content content-modal">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold " id="tablaAmortizacionModalLabel">
+                    <i class="fas fa-calculator me-2"></i>Tabla de Amortización
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Resumen de los datos del crédito -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold mb-3">Información del Crédito</h6>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Tipo de Crédito</p>
+                                        <p id="modal-tipo-credito">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Monto del Préstamo</p>
+                                        <p id="modal-monto-prestamo">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Plazo</p>
+                                        <p id="modal-plazo">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Tasa de Interés</p>
+                                        <p id="modal-tasa">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold mb-3">Resumen del Crédito</h6>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Total Capital</p>
+                                        <p id="modal-total-capital">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Total Interés</p>
+                                        <p id="modal-total-interes">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Total Seguro</p>
+                                        <p id="modal-total-seguro">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Total a Pagar</p>
+                                        <p class="fw-bold" id="modal-total-pago">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de amortización -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="tabla-amortizacion">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Período</th>
+                                <th class="text-end">Capital</th>
+                                <th class="text-end">Interés</th>
+                                <th class="text-end">Seguro</th>
+                                <th class="text-end">Cuota Total</th>
+                                <th class="text-end">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Aquí se llenará dinámicamente la tabla -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-3 modal-litle-section">
+                    <p class="text-muted small fst-italic">Valores referenciales, no son considerados como una oferta formal de préstamo. La oferta definitiva está sujeta al cumplimiento de las condiciones y políticas referentes a capacidad de pago.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-blue" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-yellow" id="btn-descargar-tabla">
+                    <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="feature-section">
+    <div class="container">
+        <h2 class="section-title">Beneficios</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <h3 class="feature-title">Flexibilidad en monto y plazo</h3>
+                    <p>Adapta tu crédito a tus necesidades, eligiendo el monto y plazo que mejor se ajusten a tu capacidad de pago.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa fa-percent"></i>
+                    </div>
+                    <h3 class="feature-title">Tasas competitivas</h3>
+                    <p>Aprovecha nuestras tasas competitivas para que tu crédito sea accesible y económico desde el primer día.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa fa-usd"></i>
+                    </div>
+                    <h3 class="feature-title">Creditos rapidos y efectivos</h3>
+                    <p>Obtén la respuesta que necesitas en el menor tiempo posible, con procesos ágiles y resultados efectivos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            $(".datos-simulacion").hide();
+
+            // Formateo de números
+            function formatMoney(value) {
+                if (!value) return "$0.00";
+                return "$" + parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }
+            
+            function unformatMoney(value) {
+                return parseFloat(value.replace(/[$,]/g, '')) || 0;
+            }
+            
+            // Llenar el selector de plazos según el tipo de crédito
+            function actualizarPlazos() {
+                const tipo = $("#tipo_credito option:selected");
+                const minPlazo = parseInt(tipo.data('min-plazo')) || 12;
+                const maxPlazo = parseInt(tipo.data('max-plazo')) || 300;
+                
+                const plazoSelect = $("#plazo");
+                plazoSelect.empty();
+                plazoSelect.append('<option value="" disabled selected>Selecciona tu plazo</option>');
+                
+                // Añadir opciones comunes: 1 año, 2 años, etc.
+                const plazosComunes = [12, 24, 36, 48, 60, 120, 180, 240, 300];
+                
+                plazosComunes.forEach(meses => {
+                    if (meses >= minPlazo && meses <= maxPlazo) {
+                        const años = meses / 12;
+                        plazoSelect.append(`<option value="${meses}">${años} ${años === 1 ? 'año' : 'años'} (${meses} meses)</option>`);
+                    }
+                });
+            }
+
+            // Función para reiniciar el simulador al cambiar el tipo de crédito
+            function reiniciarSimulador() {
+                // Limpiar campos de entrada
+                $("#monto_vivienda").val('');
+                $("#monto_prestamo").val('');
+                $("#plazo").val('');
+                
+                // Desseleccionar métodos de pago
+                $(".metodo-card").removeClass("selected");
+                $("#metodo_pago").val('');
+                
+                // Reiniciar resumen de pago
+                $(".valor-pago").text("$0.00");
+                $(".total-mensual h2").text("$0.00");
+                $(".info-plazo").text("Durante 0 meses (0 años)");
+                
+                // Reiniciar detalle de crédito
+                $(".detalle-credito .row").eq(0).find(".col-5").text("$0.00");
+                $(".detalle-credito .row").eq(1).find(".col-5").text("$0.00");
+                $(".detalle-credito .row").eq(2).find(".col-5").text("$0.00");
+                $(".detalle-credito .row").eq(3).find(".col-5").text("$0.00");
+                
+                // Eliminar tabla de amortización almacenada
+                window.tablaAmortizacion = null;
+            }
+            
+            // Evento al cambiar tipo de crédito
+            $("#tipo_credito").change(function() {
+                const tipoSeleccionado = this.value;
+                const tipOption = this.options[this.selectedIndex];
+                
+                // Reiniciar el simulador cuando se cambia el tipo de crédito
+                reiniciarSimulador();
+                
+                if (tipoSeleccionado) {
+                    const tasa = parseFloat(tipOption.dataset.tasa);
+                    const minMonto = parseFloat(tipOption.dataset.minMonto);
+                    const maxMonto = parseFloat(tipOption.dataset.maxMonto);
+                    
+                    // Actualizar valores mínimos
+                    $("#min_monto_vivienda").text(`Min: ${formatMoney(minMonto)}`);
+                    $("#min_monto_prestamo").text(`Min: ${formatMoney(minMonto)}`);
+                    
+                    // Mostrar formulario de simulación
+                    $(".datos-simulacion").show();
+                    
+                    // Actualizar plazos disponibles
+                    actualizarPlazos();
+                    
+                    // Actualizar tasa en el resumen
+                    $(".info-tasa").text(`Con una tasa de interés referencial ${tasa}%`);
+                } else {
+                    $(".datos-simulacion").hide();
+                }
+            });
+            
+            // Selección de método de pago
+            $(".metodo-card").click(function() {
+                $(".metodo-card").removeClass("selected");
+                $(this).addClass("selected");
+                
+                const metodoId = $(this).attr("id");
+                $("#metodo_pago").val(metodoId === "metodo-frances" ? "frances" : "aleman");
+            });
+            
+            // Formatear inputs de dinero
+            $(".numero-formato").on("input", function() {
+                const value = $(this).val().replace(/[^0-9]/g, '');
+                
+                if (value) {
+                    const formattedValue = formatMoney(value);
+                    $(this).val(formattedValue);
+                }
+            });
+            
+            // Calcular simulación
+            $("#btn-simular").click(function() {
+                const tipoCredito = $("#tipo_credito").val();
+                const montoVivienda = unformatMoney($("#monto_vivienda").val());
+                const montoPrestamo = unformatMoney($("#monto_prestamo").val());
+                const plazo = $("#plazo").val();
+                const metodoPago = $("#metodo_pago").val();
+                
+                // Validaciones
+                if (!tipoCredito) {
+                    alert("Por favor selecciona un tipo de crédito");
+                    return;
+                }
+                
+                if (!montoVivienda) {
+                    alert("Por favor ingresa el valor de la vivienda");
+                    return;
+                }
+                
+                if (!montoPrestamo) {
+                    alert("Por favor ingresa el monto que necesitas que te prestemos");
+                    return;
+                }
+                
+                if (!plazo) {
+                    alert("Por favor selecciona un plazo");
+                    return;
+                }
+                
+                if (!metodoPago) {
+                    alert("Por favor selecciona un método de pago");
+                    return;
+                }
+                
+                // Obtener datos del tipo de crédito para validación adicional
+                const tipoOption = $("#tipo_credito option:selected");
+                const minMonto = parseFloat(tipoOption.data("min-monto"));
+                const maxMonto = parseFloat(tipoOption.data("max-monto"));
+                
+                // Validar montos contra límites
+                if (montoPrestamo < minMonto) {
+                    alert(`El monto mínimo del préstamo es ${formatMoney(minMonto)}`);
+                    return;
+                }
+                
+                if (montoPrestamo > maxMonto) {
+                    alert(`El monto máximo del préstamo es ${formatMoney(maxMonto)}`);
+                    return;
+                }
+                
+                // Enviar datos para cálculo
+                $.ajax({
+                    url: "{% url 'calcular' %}",
+                    type: "POST",
+                    data: {
+                        tipo_credito: tipoCredito,
+                        monto_vivienda: montoVivienda,
+                        monto_prestamo: montoPrestamo,
+                        plazo: plazo,
+                        metodo_pago: metodoPago,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        // Actualizar resumen
+                        const tabla = response.tabla;
+                        
+                        if (tabla && tabla.length > 0) {
+                            const primeraCuota = tabla[0];
+                            
+                            // Actualizar valores en el resumen
+                            $(".valor-pago").eq(0).text(formatMoney(primeraCuota.capital));
+                            $(".valor-pago").eq(1).text(formatMoney(primeraCuota.interes));
+                            $(".valor-pago").eq(2).text(formatMoney(primeraCuota.seguro));
+                            
+                            $(".total-mensual h2").text(formatMoney(primeraCuota.pago_total));
+                            
+                            const años = Math.floor(plazo / 12);
+                            const mesesRestantes = plazo % 12;
+                            let textoAños = "";
+                            
+                            if (años > 0) {
+                                textoAños += `${años} ${años === 1 ? 'año' : 'años'}`;
+                            }
+                            
+                            if (mesesRestantes > 0) {
+                                if (textoAños) textoAños += " y ";
+                                textoAños += `${mesesRestantes} ${mesesRestantes === 1 ? 'mes' : 'meses'}`;
+                            }
+                            
+                            $(".info-plazo").text(`Durante ${plazo} meses (${textoAños})`);
+                            
+                            // Actualizar detalle del crédito
+                            $(".detalle-credito .row").eq(0).find(".col-5").text(formatMoney(montoPrestamo));
+                            $(".detalle-credito .row").eq(1).find(".col-5").text(formatMoney(response.total_interes));
+                            $(".detalle-credito .row").eq(2).find(".col-5").text(formatMoney(response.total_seguro));
+                            $(".detalle-credito .row").eq(3).find(".col-5").text(formatMoney(response.total_pago));
+                            
+                            // Guardar tabla para mostrarla después
+                            window.tablaAmortizacion = tabla;
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en la simulación", xhr.responseText);
+                        console.error("Status:", status);
+                        console.error("Error:", error);
+                        try {
+                            const respuesta = JSON.parse(xhr.responseText);
+                            alert("Error: " + (respuesta.error || "Ha ocurrido un error desconocido"));
+                        } catch(e) {
+                            alert("Ha ocurrido un error al calcular la simulación. Por favor intenta nuevamente.");
+                        }
+                    }
+                });
+            });
+            
+            // Mostrar tabla de amortización
+            $("#ver-tabla-amortizacion").click(function(e) {
+                e.preventDefault();
+                
+                if (!window.tablaAmortizacion || window.tablaAmortizacion.length === 0) {
+                    alert("Primero debes realizar una simulación");
+                    return;
+                }
+                
+                // Actualizar la información del modal
+                $("#modal-tipo-credito").text($("#tipo_credito option:selected").text());
+                $("#modal-monto-prestamo").text($("#monto_prestamo").val());
+                $("#modal-plazo").text($("#plazo option:selected").text());
+                $("#modal-tasa").text($("#tipo_credito option:selected").data('tasa') + "%");
+                
+                // Calcular totales para el resumen
+                const totalCapital = unformatMoney($("#monto_prestamo").val());
+                const totalInteres = window.tablaAmortizacion.reduce((sum, cuota) => sum + cuota.interes, 0);
+                const totalSeguro = window.tablaAmortizacion.reduce((sum, cuota) => sum + cuota.seguro, 0);
+                const totalPago = totalCapital + totalInteres + totalSeguro;
+                
+                // Actualizar resumen
+                $("#modal-total-capital").text(formatMoney(totalCapital));
+                $("#modal-total-interes").text(formatMoney(totalInteres));
+                $("#modal-total-seguro").text(formatMoney(totalSeguro));
+                $("#modal-total-pago").text(formatMoney(totalPago));
+                
+                // Limpiar tabla anterior
+                $("#tabla-amortizacion tbody").empty();
+                
+                // Llenar tabla con datos
+                window.tablaAmortizacion.forEach(function(cuota) {
+                    $("#tabla-amortizacion tbody").append(`
+                        <tr>
+                            <td class="text-center">${cuota.periodo}</td>
+                            <td class="text-end">${formatMoney(cuota.capital)}</td>
+                            <td class="text-end">${formatMoney(cuota.interes)}</td>
+                            <td class="text-end">${formatMoney(cuota.seguro)}</td>
+                            <td class="text-end fw-bold">${formatMoney(cuota.pago_total)}</td>
+                            <td class="text-end">${formatMoney(cuota.saldo)}</td>
+                        </tr>
+                    `);
+                });
+                
+                // Mostrar modal
+                const tablaModal = new bootstrap.Modal(document.getElementById('tablaAmortizacionModal'));
+                tablaModal.show();
+            });
+            
+            // Descargar tabla de amortización como PDF
+            $("#btn-descargar-tabla").click(function() {
+                if (!window.tablaAmortizacion || window.tablaAmortizacion.length === 0) {
+                    alert("Primero debes realizar una simulación");
+                    return;
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Configuración de colores y estilos
+                const colorPrimario = [20, 66, 114]; // Azul Ahorro Futuro
+                const colorSecundario = [250, 186, 10]; // Amarillo Ahorro Futuro
+                const colorTexto = [60, 60, 60]; // Gris oscuro
+                const colorSubtitulo = [100, 100, 100]; // Gris medio
+                
+                // Función para agregar el membrete
+                function agregarMembrete() {
+                    // Fondo del membrete
+                    doc.setFillColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                    doc.rect(0, 0, doc.internal.pageSize.getWidth(), 35, 'F');
+                    
+                    // Franja decorativa amarilla
+                    doc.setFillColor(colorSecundario[0], colorSecundario[1], colorSecundario[2]);
+                    doc.rect(0, 35, doc.internal.pageSize.getWidth(), 5, 'F');
+                    
+                    // Texto del membrete
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(22);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text("AHORRO FUTURO", 14, 20);
+                    
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text("Institución Financiera", 14, 28);
+                    
+                    // Fecha en el membrete
+                    const fechaActual = new Date().toLocaleDateString();
+                    doc.setFontSize(10);
+                    doc.text(`Generado: ${fechaActual}`, doc.internal.pageSize.getWidth() - 60, 20);
+                }
+                
+                // Función para agregar pie de página en cada página
+                function agregarPieDePagina(pageNumber, pageCount) {
+                    // Línea separadora
+                    doc.setDrawColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                    doc.setLineWidth(0.5);
+                    doc.line(14, doc.internal.pageSize.getHeight() - 20, doc.internal.pageSize.getWidth() - 14, doc.internal.pageSize.getHeight() - 20);
+                    
+                    // Información de contacto
+                    doc.setFontSize(8);
+                    doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                    doc.text("Ahorro Futuro • Tel: (01) 234-5678 • www.ahorrofuturo.com", 14, doc.internal.pageSize.getHeight() - 14);
+                    
+                    // Número de página
+                    doc.text(`Página ${pageNumber} de ${pageCount}`, doc.internal.pageSize.getWidth() - 45, doc.internal.pageSize.getHeight() - 14);
+                }
+                
+                // Agregar membrete
+                agregarMembrete();
+                
+                // Título del documento
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text("TABLA DE AMORTIZACIÓN", doc.internal.pageSize.getWidth() / 2, 50, { align: 'center' });
+                
+                // Información del crédito - Contenedor
+                const startY = 60;
+                doc.setDrawColor(240, 240, 240);
+                doc.setFillColor(248, 248, 248);
+                doc.roundedRect(14, startY, doc.internal.pageSize.getWidth() - 28, 40, 3, 3, 'FD');
+                
+                // Información del crédito - Título
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.setFontSize(12);
+                doc.text("Información del Crédito", 20, startY + 10);
+                
+                // Información del crédito - Contenido
+                doc.setTextColor(colorTexto[0], colorTexto[1], colorTexto[2]);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                
+                const tipoCredito = $("#tipo_credito option:selected").text();
+                const montoPrestamo = $("#monto_prestamo").val();
+                const plazo = $("#plazo option:selected").text();
+                const tasaInteres = $("#tipo_credito option:selected").data('tasa') + "%";
+                const metodoPago = $("#metodo_pago").val() === 'frances' ? 'Francés (cuotas fijas)' : 'Alemán (cuotas variables)';
+                
+                // Columna izquierda
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                doc.text("Tipo de Crédito:", 25, startY + 20);
+                doc.text("Monto del Préstamo:", 25, startY + 30);
+                
+                // Columna derecha
+                doc.text("Plazo:", doc.internal.pageSize.getWidth() / 2 + 10, startY + 20);
+                doc.text("Tasa de Interés:", doc.internal.pageSize.getWidth() / 2 + 10, startY + 30);
+                
+                // Valores columna izquierda
+                doc.setTextColor(colorTexto[0], colorTexto[1], colorTexto[2]);
+                doc.setFont('helvetica', 'bold');
+                doc.text(tipoCredito, 70, startY + 20);
+                doc.text(montoPrestamo, 70, startY + 30);
+                
+                // Valores columna derecha
+                doc.text(plazo, doc.internal.pageSize.getWidth() / 2 + 35, startY + 20);
+                doc.text(tasaInteres, doc.internal.pageSize.getWidth() / 2 + 50, startY + 30);
+                
+                // Resumen del crédito - Contenedor
+                const resumenY = startY + 50;
+                doc.setDrawColor(240, 240, 240);
+                doc.setFillColor(248, 248, 248);
+                doc.roundedRect(14, resumenY, doc.internal.pageSize.getWidth() - 28, 40, 3, 3, 'FD');
+                
+                // Resumen del crédito - Título
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.setFontSize(12);
+                doc.text("Resumen del Crédito", 20, resumenY + 10);
+                
+                // Resumen del crédito - Contenido
+                const totalCapital = unformatMoney($("#monto_prestamo").val());
+                const totalInteres = window.tablaAmortizacion.reduce((sum, cuota) => sum + cuota.interes, 0);
+                const totalSeguro = window.tablaAmortizacion.reduce((sum, cuota) => sum + cuota.seguro, 0);
+                const totalPago = totalCapital + totalInteres + totalSeguro;
+                
+                // Columna izquierda
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                doc.text("Total Capital:", 25, resumenY + 20);
+                doc.text("Total Interés:", 25, resumenY + 30);
+                
+                // Columna derecha
+                doc.text("Total Seguro:", doc.internal.pageSize.getWidth() / 2 + 10, resumenY + 20);
+                doc.text("Total a Pagar:", doc.internal.pageSize.getWidth() / 2 + 10, resumenY + 30);
+                
+                // Valores columna izquierda
+                doc.setTextColor(colorTexto[0], colorTexto[1], colorTexto[2]);
+                doc.setFont('helvetica', 'bold');
+                doc.text(formatMoney(totalCapital), 70, resumenY + 20);
+                doc.text(formatMoney(totalInteres), 70, resumenY + 30);
+                
+                // Valores columna derecha
+                doc.text(formatMoney(totalSeguro), doc.internal.pageSize.getWidth() / 2 + 50, resumenY + 20);
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.text(formatMoney(totalPago), doc.internal.pageSize.getWidth() / 2 + 50, resumenY + 30);
+                
+                // Tabla de amortización
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                doc.autoTable({
+                    head: [['Período', 'Capital', 'Interés', 'Seguro', 'Cuota Total', 'Saldo']],
+                    body: window.tablaAmortizacion.map(cuota => [
+                        cuota.periodo,
+                        formatMoney(cuota.capital),
+                        formatMoney(cuota.interes),
+                        formatMoney(cuota.seguro),
+                        formatMoney(cuota.pago_total),
+                        formatMoney(cuota.saldo),
+                    ]),
+                    startY: resumenY + 50,
+                    theme: 'grid',
+                    headStyles: { 
+                        fillColor: colorPrimario, 
+                        textColor: 255,
+                        fontSize: 10,
+                        fontStyle: 'bold',
+                        halign: 'center'
+                    },
+                    columnStyles: {
+                        0: { halign: 'center' },
+                        1: { halign: 'right' },
+                        2: { halign: 'right' },
+                        3: { halign: 'right' },
+                        4: { halign: 'right' },
+                        5: { halign: 'right' }
+                    },
+                    styles: { 
+                        fontSize: 9,
+                        cellPadding: 4
+                    },
+                    alternateRowStyles: {
+                        fillColor: [248, 248, 248]
+                    },
+                    // Garantizar que la tabla se vea bien en múltiples páginas
+                    didDrawPage: function(data) {
+                        // Agregar membrete en cada nueva página (excepto la primera)
+                        if (data.pageCount > 1 && data.pageNumber > 1) {
+                            agregarMembrete();
+                        }
+                        
+                        // Agregar pie de página en cada página
+                        agregarPieDePagina(data.pageNumber, data.pagesCount);
+                    }
+                });
+                
+                // Agregar disclaimer
+                const finalY = doc.lastAutoTable.finalY + 10;
+                
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'italic');
+                doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                doc.text("* Valores referenciales, no son considerados como una oferta formal de préstamo.", 14, finalY);
+                doc.text("La oferta definitiva está sujeta al cumplimiento de las condiciones y políticas referentes a capacidad de pago.", 14, finalY + 4);
+                
+                // Agregar pie de página en la primera página
+                agregarPieDePagina(1, doc.internal.getNumberOfPages());
+                
+                // Descargar documento
+                const fechaFormatada = new Date().toLocaleDateString().replace(/\//g, '-');
+                doc.save(`Amortizacion-AhorroFuturo-${fechaFormatada}.pdf`);
+            });
+        });
+    </script>
+{% endblock %}

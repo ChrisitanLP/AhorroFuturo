@@ -1,0 +1,64 @@
+{% extends 'base_page.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Simulador de Inversión | Ahorro Futuro{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'styles/table.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="simulador-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 simulador-content">
+                <h1 class="simulador-title"><span style="color: var(--pichincha-blue);">Simulador de Inversión</span></h1>
+                <p class="simulador-subtitle">Rentabiliza tu dinero con una inversión a una tasa de interés conveniente.</p>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="simulador_ilustracion">
+                    <img src="{% static 'assets/img/Banners/simulador_banner.png' %}" alt="Ilustracion">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="feature-section">
+    <div class="container">
+        <h2 class="section-title">Beneficios</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <h3 class="feature-title">Rentabilización</h3>
+                    <p>Más rentabilidad para tus inversiones.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa fa-usd"></i>
+                    </div>
+                    <h3 class="feature-title">Monto y Plazo</h3>
+                    <p>Opciones de montos y plazos.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <h3 class="feature-title">Recibir intereses</h3>
+                    <p>Tú decides cuando quieres recibir los intereses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
