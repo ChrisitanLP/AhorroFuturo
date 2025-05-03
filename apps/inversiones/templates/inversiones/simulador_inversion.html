@@ -5,7 +5,7 @@
 {% block title %}Simulador de Inversión | Ahorro Futuro{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'styles/table.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/inversion.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -25,7 +25,398 @@
     </div>
 </section>
 
+<div class="container my-5">
+    <div class="stepper-wrapper mb-4" id="investment-stepper">
+        <div class="stepper-item active" data-step="1">
+            <span class="step-counter">1</span>
+            <div class="step-name">Seleccionar inversión</div>
+        </div>
+        <div class="stepper-item" data-step="2">
+            <span class="step-counter">2</span>
+            <div class="step-name">Detalles</div>
+        </div>
+        <div class="stepper-item" data-step="3">
+            <span class="step-counter">3</span>
+            <div class="step-name">Resultados</div>
+        </div>
+    </div>
+</div>
 
+<div class="container my-5">
+    <h1 class="text-center mb-4 detalle_credito-title">¿Qué tipo de inversión te interesa?</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <!-- Tarjeta principal -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <!-- Stepper de pasos -->
+
+                    <!-- Formulario de simulación -->
+                    <form id="formulario-simulador-inversion">
+                        <!-- Paso 1: Selección de tipo de inversión -->
+                        <div class="step-content active" id="step-1">
+                            <div class="row justify-content-center">
+                                {% for tipo in tipos_inversion %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card tipo-inversion-card" data-id="{{ tipo.id }}">
+                                        <div class="card-body text-center">
+                                            <div class="risk-indicator risk-{{ tipo.riesgo|lower }}">
+                                                <span>Riesgo {{ tipo.riesgo|title }}</span>
+                                            </div>
+                                            <h5 class="card-title">{{ tipo.nombre }}</h5>
+                                            <p class="rentabilidad">
+                                                <span class="porcentaje">{{ tipo.rentabilidad_anual_minima }}% - {{ tipo.rentabilidad_anual_maxima }}%</span>
+                                                <span class="periodo">anual</span>
+                                            </p>
+                                            <p class="card-text small">{{ tipo.descripcion|truncatechars:100 }}</p>
+                                            <hr>
+                                            <div class="caracteristicas small">
+                                                <div class="row">
+                                                    <div class="col-6 text-start">Plazo mínimo:</div>
+                                                    <div class="col-6 text-end">{{ tipo.plazo_minimo }} meses</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6 text-start">Monto mínimo:</div>
+                                                    <div class="col-6 text-end">${{ tipo.monto_minimo }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-yellow btn-continue" data-next="2" disabled>Continuar</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Paso 2: Configuración de la inversión -->
+                        <div class="step-content" id="step-2">
+                            <div class="row">
+                                <div class="col-md-12 text-center mb-4">
+                                    <h3>Configura tu inversión</h3>
+                                    <h5 id="tipo-inversion-seleccionado" class=""></h5>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 inversion-form-section">
+                                    <div class="form-group mb-4">
+                                        <label for="monto_inversion">¿Cuánto dinero quieres invertir?</label>
+                                        <input type="text" id="monto_inversion" name="monto_inversion" class="form-control numero-formato" placeholder="Ej: $5000">
+                                        <small class="form-text text-muted" id="rango_monto">Rango: $0 - $0</small>
+                                    </div>
+                                    
+                                    <div class="form-group mb-4">
+                                        <label for="plazo">¿Por cuánto tiempo deseas invertir?</label>
+                                        <select id="plazo" name="plazo" class="form-control form-select">
+                                            <option value="" disabled selected>Selecciona el plazo</option>
+                                        </select>
+                                        <small class="form-text text-muted" id="rango_plazo">Rango: 0 - 0 meses</small>
+                                    </div>
+                                    
+                                    <div class="form-group mb-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="reinversion_intereses" name="reinversion_intereses">
+                                            <label class="form-check-label" for="reinversion_intereses">
+                                                Reinvertir intereses (capitalización)
+                                            </label>
+                                        </div>
+                                        <small class="form-text text-muted text-italic">Los intereses generados se reinvierten para generar más rendimientos</small>
+                                    </div>
+                                    
+                                    <div class="extra-infor-inversion">
+                                        <div class="info-rentabilidad mb-4">
+                                            <h5>Rentabilidad estimada</h5>
+                                            <div class="rentabilidad-range-container">
+                                                <div class="rentabilidad-range">
+                                                    <div class="rentabilidad-fill" id="rentabilidad-fill"></div>
+                                                </div>
+                                                <div class="rentabilidad-labels">
+                                                    <span id="rentabilidad-min">0%</span>
+                                                    <span id="rentabilidad-max">0%</span>
+                                                </div>
+                                            </div>
+                                            <p class="small text-muted mt-2">La rentabilidad final dependerá de las condiciones del mercado al momento de invertir.</p>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group mb-4">
+                                            <div class="risk-explanation">
+                                                <h5>Nivel de riesgo: <span id="nivel-riesgo">-</span></h5>
+                                                <div class="risk-meter">
+                                                    <div class="risk-level" id="risk-level"></div>
+                                                </div>
+                                                <p class="small text-muted mt-2" id="risk-description"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card inversion-preview">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">Previsualización</h5>
+                                            <hr>
+                                            <div class="preview-chart-container">
+                                                <canvas id="previewChart"></canvas>
+                                            </div>
+                                            
+                                            <div class="inversion-resumen mt-4">
+                                                <div class="row">
+                                                    <div class="col-7">Capital inicial:</div>
+                                                    <div class="col-5 text-end" id="preview-capital">$0.00</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-7">Intereses estimados:</div>
+                                                    <div class="col-5 text-end" id="preview-intereses">$0.00</div>
+                                                </div>
+                                                <div class="row fw-bold mt-2">
+                                                    <div class="col-7">Total estimado al final:</div>
+                                                    <div class="col-5 text-end" id="preview-total">$0.00</div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 text-center">
+                                                <p class="disclaimer small">Valores referenciales, no son considerados como una oferta formal. La oferta definitiva está sujeta al cumplimiento de las condiciones y políticas referentes a capacidad de pago.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-outline-blue me-2 btn-back" data-prev="1">Atrás</button>
+                                <button type="button" class="btn btn-yellow btn-continue" data-next="3">Calcular resultados</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Paso 3: Resultados de la simulación -->
+                        <div class="step-content" id="step-3">
+                            <div class="row">
+                                <div class="col-md-12 text-center mb-4">
+                                    <h3>Resultado de tu inversión</h3>
+                                    <h5 class="">Conoce el rendimiento proyectado de tu inversión</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="resultado-container">
+                                <!-- Panel de Resumen Principal -->
+                                <div class="resultado-principal-panel">
+                                    <div class="card rounded-lg shadow-sm">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-6 resultado-monto-final">
+                                                    <h5>Tu inversión crecerá hasta</h5>
+                                                    <div class="monto-final" id="final-monto">$0.00</div>
+                                                    <div class="crecimiento-badge" id="crecimiento-porcentaje">+0%</div>
+                                                </div>
+                                                <div class="col-md-6 resultado-desglose">
+                                                    <div class="desglose-item">
+                                                        <div class="desglose-label">Capital inicial:</div>
+                                                        <div class="desglose-value" id="final-capital-inicial">$0.00</div>
+                                                    </div>
+                                                    <div class="desglose-item">
+                                                        <div class="desglose-label">Intereses generados:</div>
+                                                        <div class="desglose-value" id="final-intereses">$0.00</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Paneles de Información Principal -->
+                                <div class="row resultado-info-panels">
+                                    <!-- Panel de Detalles de la Inversión -->
+                                    <div class="col-md-5 result-info-panels">
+                                        <div class="card rounded-lg shadow-sm h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    Detalles de tu inversión
+                                                </h5>
+                                                <hr>
+                                                <div class="detalles-grid">
+                                                    <div class="detalle-item">
+                                                        <div class="detalle-icon">
+                                                            <i class="fas fa-coins"></i>
+                                                        </div>
+                                                        <div class="detalle-content">
+                                                            <div class="detalle-label">Capital invertido</div>
+                                                            <div class="detalle-value" id="resultado-capital">$0.00</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="detalle-item">
+                                                        <div class="detalle-icon">
+                                                            <i class="fas fa-calendar-alt"></i>
+                                                        </div>
+                                                        <div class="detalle-content">
+                                                            <div class="detalle-label">Plazo</div>
+                                                            <div class="detalle-value" id="resultado-plazo">0 meses (0 años)</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="detalle-item">
+                                                        <div class="detalle-icon">
+                                                            <i class="fas fa-chart-line"></i>
+                                                        </div>
+                                                        <div class="detalle-content">
+                                                            <div class="detalle-label">Rentabilidad anual</div>
+                                                            <div class="detalle-value" id="resultado-rentabilidad">0%</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="detalle-item">
+                                                        <div class="detalle-icon">
+                                                            <i class="fas fa-sync-alt"></i>
+                                                        </div>
+                                                        <div class="detalle-content">
+                                                            <div class="detalle-label">Capitalización</div>
+                                                            <div class="detalle-value" id="resultado-capitalizacion">No</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="detalle-item">
+                                                        <div class="detalle-icon">
+                                                            <i class="fas fa-shield-alt"></i>
+                                                        </div>
+                                                        <div class="detalle-content">
+                                                            <div class="detalle-label">Nivel de riesgo</div>
+                                                            <div class="detalle-value" id="resultado-riesgo">Bajo</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Panel de Gráfico -->
+                                    <div class="col-md-7 result-info-panels">
+                                        <div class="card rounded-lg shadow-sm h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    Evolución de tu inversión
+                                                </h5>
+                                                <hr>
+                                                <div class="chart-container">
+                                                    <canvas id="resultadoChart"></canvas>
+                                                </div>
+                                                <div class="chart-legend">
+                                                    <div class="legend-item">
+                                                        <span class="legend-color capital-color"></span>
+                                                        <span class="legend-text">Capital inicial</span>
+                                                    </div>
+                                                    <div class="legend-item">
+                                                        <span class="legend-color interes-color"></span>
+                                                        <span class="legend-text">Intereses generados</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="text-center mt-4">
+                                                    <button type="button" class="btn btn-outline-primary" id="ver-tabla-detalle">
+                                                        <i class="fas fa-table me-2"></i>Ver detalle mes a mes
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Tabla de Detalle (oculta por defecto) -->
+                                <div class="tabla-detalle mt-4" style="display: none;">
+                                    <div class="rounded-lg">
+                                        <div class="">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h5 class="mb-0">
+                                                    Detalle mes a mes
+                                                </h5>
+                                            </div>
+                                            <hr>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover" id="tabla-resultados">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">Periodo</th>
+                                                            <th class="text-end">Capital</th>
+                                                            <th class="text-end">Interés generado</th>
+                                                            <th class="text-end">Capital final</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Aquí se llenarán los resultados -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Botones de Acción -->
+                                <div class="resultado-actions mt-4">
+                                    <button type="button" class="btn btn-outline-blue me-3 btn-back" data-prev="2">
+                                        <i class="fas fa-arrow-left me-2"></i>Atrás
+                                    </button>
+                                    <button type="button" class="btn btn-yellow" id="recalcular">
+                                        <i class="fas fa-sync me-2"></i>Nueva simulación
+                                    </button>
+                                </div>
+                                
+                                <!-- Call-to-Action -->
+                                <div class="carta-inversion mt-5">
+                                    <div class="card border-primary">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-9">
+                                                    <h4 class="mb-3">¿Te interesa esta inversión?</h4>
+                                                    <p>Abre una cuenta en Ahorro Futuro y comienza a invertir hoy mismo para asegurar tu futuro financiero. Nuestros asesores están listos para ayudarte.</p>
+                                                </div>
+                                                <div class="col-md-3 text-center">
+                                                    <a href="{% url 'contacto' %}" class="btn btn-yellow btn-lg">
+                                                        <i class="fas fa-chevron-right me-2"></i>Quiero invertir
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" id="tipo_inversion_id" name="tipo_inversion_id" value="">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para tabla de amortización -->
+<div class="modal fade" id="modalTablaDetalle" tabindex="-1" aria-labelledby="modalTablaDetalleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTablaDetalleLabel">Detalle mes a mes de tu inversión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="modal-tabla-resultados">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Periodo</th>
+                                <th class="text-end">Capital</th>
+                                <th class="text-end">Interés generado</th>
+                                <th class="text-end">Capital final</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Aquí se llenarán los resultados -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <section class="feature-section">
     <div class="container">
@@ -61,4 +452,719 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Simulador de Inversión - JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Variables globales
+            let previewChart = null;
+            let resultadoChart = null;
+            let tipoInversionSeleccionado = null;
+            let resultadosCalculados = null;
+            
+            // Elementos DOM
+            const tipoInversionCards = document.querySelectorAll('.tipo-inversion-card');
+            const btnContinue = document.querySelectorAll('.btn-continue');
+            const btnBack = document.querySelectorAll('.btn-back');
+            const stepItems = document.querySelectorAll('.stepper-item');
+            const stepContents = document.querySelectorAll('.step-content');
+            const plazoSelect = document.getElementById('plazo');
+            const montoInversion = document.getElementById('monto_inversion');
+            const reinversionCheck = document.getElementById('reinversion_intereses');
+            const btnVerTablaDetalle = document.getElementById('ver-tabla-detalle');
+            const tablaDetalle = document.querySelector('.tabla-detalle');
+            
+            // Inicialización de tooltips y toasts
+            initializeTooltipsAndToasts();
+            
+            // Formateador de moneda
+            const formatter = new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            });
+            
+            // Evento para seleccionar un tipo de inversión
+            tipoInversionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Quitar selección previa
+                    tipoInversionCards.forEach(c => c.classList.remove('selected'));
+                    // Seleccionar la tarjeta actual
+                    this.classList.add('selected');
+                    // Activar botón de continuar
+                    document.querySelector('.btn-continue[data-next="2"]').removeAttribute('disabled');
+                    // Guardar ID del tipo de inversión seleccionado
+                    const tipoId = this.getAttribute('data-id');
+                    document.getElementById('tipo_inversion_id').value = tipoId;
+                    
+                    // Obtener datos detallados del tipo de inversión
+                    fetchTipoInversionData(tipoId);
+                });
+            });
+            
+            // Eventos para los botones de navegación
+            btnContinue.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const nextStep = parseInt(this.getAttribute('data-next'));
+                    
+                    // Validaciones antes de avanzar
+                    if (nextStep === 3) {
+                        // Validar el formulario antes de calcular
+                        if (!validateInversionForm()) {
+                            return;
+                        }
+                        // Calcular resultados
+                        calcularResultados();
+                    }
+                    
+                    // Cambiar al siguiente paso
+                    goToStep(nextStep);
+                });
+            });
+            
+            btnBack.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const prevStep = parseInt(this.getAttribute('data-prev'));
+                    goToStep(prevStep);
+                });
+            });
+            
+            // Evento para recalcular
+            const btnRecalcular = document.getElementById('recalcular');
+            if (btnRecalcular) {
+                btnRecalcular.addEventListener('click', function() {
+                    goToStep(1);
+                });
+            }
+            
+            // Eventos para ver tabla de detalle
+            if (btnVerTablaDetalle) {
+                btnVerTablaDetalle.addEventListener('click', function() {
+                    tablaDetalle.style.display = tablaDetalle.style.display === 'none' ? 'block' : 'none';
+                    this.innerHTML = tablaDetalle.style.display === 'none' ? 
+                        '<i class="fas fa-table me-2"></i>Ver tabla de detalle' : 
+                        '<i class="fas fa-chevron-up me-2"></i>Ocultar tabla de detalle';
+                });
+            }
+            
+            // Evento para cambio en el monto de inversión
+            if (montoInversion) {
+                montoInversion.addEventListener('input', function() {
+                    // Eliminar caracteres no numéricos excepto el punto decimal
+                    this.value = this.value.replace(/[^\d.]/g, '');
+                    updatePreview();
+                });
+                
+                // Formatear entrada de monto como moneda
+                montoInversion.addEventListener('blur', function() {
+                    const value = parseFloat(this.value.replace(/[^\d.]/g, ''));
+                    if (!isNaN(value)) {
+                        this.value = formatter.format(value);
+                    }
+                });
+                
+                montoInversion.addEventListener('focus', function() {
+                    // Quitar formato de moneda para edición
+                    const numericValue = this.value.replace(/[^\d.]/g, '');
+                    this.value = numericValue;
+                });
+            }
+            
+            // Evento para cambio en el plazo
+            if (plazoSelect) {
+                plazoSelect.addEventListener('change', function() {
+                    updatePreview();
+                });
+            }
+            
+            // Evento para cambio en la reinversión
+            if (reinversionCheck) {
+                reinversionCheck.addEventListener('change', function() {
+                    updatePreview();
+                });
+            }
+            
+            // Función para ir a un paso específico
+            function goToStep(step) {
+                // Actualizar el stepper
+                stepItems.forEach(item => {
+                    const itemStep = parseInt(item.getAttribute('data-step'));
+                    item.classList.remove('active');
+                    item.classList.remove('completed');
+                    
+                    if (itemStep === step) {
+                        item.classList.add('active');
+                    } else if (itemStep < step) {
+                        item.classList.add('completed');
+                    }
+                });
+                
+                // Actualizar contenido visible
+                stepContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                document.getElementById('step-' + step).classList.add('active');
+            }
+            
+            // Función para obtener datos detallados del tipo de inversión seleccionado
+            function fetchTipoInversionData(tipoId) {
+                fetch(`/inversiones/api/tipo-inversion/${tipoId}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al obtener datos del tipo de inversión');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            tipoInversionSeleccionado = data.data;
+                            setupStep2WithData(tipoInversionSeleccionado);
+                        } else {
+                            showToast('error', data.error || 'Error al cargar datos del tipo de inversión');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('error', 'Error al cargar datos del tipo de inversión');
+                    });
+            }
+            
+            // Función para configurar el paso 2 con los datos obtenidos
+            function setupStep2WithData(tipoData) {
+                // Actualizar nombre del tipo de inversión seleccionado
+                document.getElementById('tipo-inversion-seleccionado').textContent = tipoData.nombre;
+                
+                // Establecer rangos de monto
+                document.getElementById('rango_monto').textContent = `Rango: ${formatter.format(tipoData.monto_minimo)} - ${formatter.format(tipoData.monto_maximo)}`;
+                
+                // Establecer rangos de plazo y llenar select
+                document.getElementById('rango_plazo').textContent = `Rango: ${tipoData.plazo_minimo} - ${tipoData.plazo_maximo} meses`;
+                
+                // Llenar el select de plazos
+                fillPlazoSelect(tipoData.plazo_minimo, tipoData.plazo_maximo);
+                
+                // Actualizar rentabilidad
+                const rentabilidadMin = tipoData.rentabilidad_minima;
+                const rentabilidadMax = tipoData.rentabilidad_maxima;
+                const rentabilidadActual = parseFloat(document.getElementById('resultado-rentabilidad').textContent) || rentabilidadMin;
+
+                // Evitar división por cero
+                const porcentajeRelativo = rentabilidadMax > rentabilidadMin
+                    ? ((rentabilidadActual - rentabilidadMin) / (rentabilidadMax - rentabilidadMin)) * 100
+                    : 0;
+
+                document.getElementById('rentabilidad-min').textContent = `${rentabilidadMin}%`;
+                document.getElementById('rentabilidad-max').textContent = `${rentabilidadMax}%`;
+                document.getElementById('rentabilidad-fill').style.width = `${porcentajeRelativo}%`;
+                
+                // Actualizar nivel de riesgo
+                const nivelRiesgo = tipoData.riesgo;
+                document.getElementById('nivel-riesgo').textContent = nivelRiesgo;
+                
+                let riskWidth = 0;
+                let riskDescription = '';
+                let riskColor = '';
+
+                switch(nivelRiesgo) {
+                    case 'BAJO':
+                        riskWidth = 30;
+                        riskColor = '#4caf50'; // verde
+                        riskDescription = 'Inversión conservadora con menor rendimiento pero mayor seguridad.';
+                        break;
+                    case 'MEDIO':
+                        riskWidth = 60;
+                        riskColor = '#ffeb3b'; // amarillo
+                        riskDescription = 'Balance entre rendimiento y seguridad.';
+                        break;
+                    case 'ALTO':
+                        riskWidth = 90;
+                        riskColor = '#f44336'; // rojo
+                        riskDescription = 'Mayor rentabilidad potencial con mayor volatilidad y riesgo.';
+                        break;
+                }
+                
+                const riskLevelEl = document.getElementById('risk-level');
+                riskLevelEl.style.width = `${riskWidth}%`;
+                riskLevelEl.style.backgroundColor = riskColor;
+                document.getElementById('risk-level').style.width = `${riskWidth}%`;
+                document.getElementById('risk-description').textContent = riskDescription;
+            }
+            
+            // Función para llenar el select de plazos
+            function fillPlazoSelect(min, max) {
+                plazoSelect.innerHTML = '<option value="" disabled selected>Selecciona el plazo</option>';
+                
+                // Añadir opciones para cada 3 meses dentro del rango
+                for (let i = min; i <= max; i += 3) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    
+                    // Formatear texto
+                    if (i < 12) {
+                        option.textContent = `${i} meses`;
+                    } else {
+                        const years = Math.floor(i / 12);
+                        const months = i % 12;
+                        
+                        if (months === 0) {
+                            option.textContent = `${years} año${years > 1 ? 's' : ''}`;
+                        } else {
+                            option.textContent = `${years} año${years > 1 ? 's' : ''} y ${months} mes${months > 1 ? 'es' : ''}`;
+                        }
+                    }
+                    
+                    plazoSelect.appendChild(option);
+                }
+            }
+            
+            // Función para validar el formulario de inversión
+            function validateInversionForm() {
+                if (!tipoInversionSeleccionado) {
+                    showToast('error', 'Debe seleccionar un tipo de inversión');
+                    return false;
+                }
+                
+                // Validar monto
+                const montoValue = parseFloat(montoInversion.value.replace(/[^\d.]/g, ''));
+                
+                if (isNaN(montoValue) || montoValue <= 0) {
+                    showToast('error', 'Ingrese un monto válido para la inversión');
+                    montoInversion.focus();
+                    return false;
+                }
+                
+                if (montoValue < tipoInversionSeleccionado.monto_minimo || montoValue > tipoInversionSeleccionado.monto_maximo) {
+                    showToast('error', `El monto debe estar entre ${formatter.format(tipoInversionSeleccionado.monto_minimo)} y ${formatter.format(tipoInversionSeleccionado.monto_maximo)}`);
+                    montoInversion.focus();
+                    return false;
+                }
+                
+                // Validar plazo
+                if (!plazoSelect.value) {
+                    showToast('error', 'Debe seleccionar un plazo para la inversión');
+                    plazoSelect.focus();
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Función para actualizar la previsualización
+            function updatePreview() {
+                if (!tipoInversionSeleccionado) return;
+                
+                const montoValue = parseFloat(montoInversion.value.replace(/[^\d.]/g, '')) || 0;
+                const plazoValue = parseInt(plazoSelect.value) || 0;
+                const reinversionValue = reinversionCheck.checked;
+                
+                // Actualizar valores en la previsualización
+                document.getElementById('preview-capital').textContent = formatter.format(montoValue);
+                
+                // Calcular intereses estimados
+                if (montoValue > 0 && plazoValue > 0) {
+                    // Rentabilidad promedio (usamos el punto medio entre mínimo y máximo)
+                    const rentabilidadPromedio = (tipoInversionSeleccionado.rentabilidad_minima + tipoInversionSeleccionado.rentabilidad_maxima) / 2;
+                    const tasaMensual = rentabilidadPromedio / 12 / 100;
+                    
+                    let interesTotal = 0;
+                    let montoFinal = montoValue;
+                    
+                    if (reinversionValue) {
+                        // Con capitalización
+                        montoFinal = montoValue * Math.pow(1 + tasaMensual, plazoValue);
+                        interesTotal = montoFinal - montoValue;
+                    } else {
+                        // Sin capitalización
+                        interesTotal = montoValue * tasaMensual * plazoValue;
+                        montoFinal = montoValue + interesTotal;
+                    }
+                    
+                    document.getElementById('preview-intereses').textContent = formatter.format(interesTotal);
+                    document.getElementById('preview-total').textContent = formatter.format(montoFinal);
+                    
+                    // Actualizar gráfico de previsualización
+                    updatePreviewChart(montoValue, interesTotal);
+                } else {
+                    document.getElementById('preview-intereses').textContent = formatter.format(0);
+                    document.getElementById('preview-total').textContent = formatter.format(montoValue);
+                    
+                    // Resetear gráfico
+                    updatePreviewChart(0, 0);
+                }
+            }
+            
+            // Función para actualizar el gráfico de previsualización
+            function updatePreviewChart(capital, interes) {
+                const ctx = document.getElementById('previewChart').getContext('2d');
+                
+                // Destruir gráfico anterior si existe
+                if (previewChart) {
+                    previewChart.destroy();
+                }
+                
+                // Crear nuevo gráfico
+                previewChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Capital', 'Intereses'],
+                        datasets: [{
+                            data: [capital, interes],
+                            backgroundColor: ['#003366', '#ffdd00'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${formatter.format(context.raw)}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Función para calcular resultados de la inversión
+            function calcularResultados() {
+                const tipoInversionId = document.getElementById('tipo_inversion_id').value;
+                const montoValue = parseFloat(montoInversion.value.replace(/[^\d.]/g, ''));
+                const plazoValue = parseInt(plazoSelect.value);
+                const reinversionValue = reinversionCheck.checked;
+                
+                // Datos para el cálculo
+                const data = {
+                    tipo_inversion: tipoInversionId,
+                    monto_inversion: montoValue,
+                    plazo: plazoValue,
+                    reinversion_intereses: reinversionValue
+                };
+                
+                // Realizar la petición al servidor
+                fetch('/inversiones/api/calcular-inversion/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.error || 'Error al calcular inversión');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(response => {
+                    if (response.success) {
+                        resultadosCalculados = response.data;
+                        mostrarResultados(resultadosCalculados);
+                    } else {
+                        showToast('error', response.error || 'Error al calcular inversión');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('error', error.message || 'Error al procesar la solicitud');
+                });
+            }
+            
+            // Función para mostrar los resultados calculados
+            function mostrarResultados(resultados) {
+                // Actualizar sección de resumen principal
+                document.getElementById('final-monto').textContent = formatter.format(resultados.capital_final);
+                document.getElementById('final-capital-inicial').textContent = formatter.format(resultados.capital_inicial);
+                document.getElementById('final-intereses').textContent = formatter.format(resultados.interes_total);
+                
+                // Calcular porcentaje de crecimiento con 2 decimales
+                const crecimientoPorcentaje = ((resultados.capital_final / resultados.capital_inicial) - 1) * 100;
+                document.getElementById('crecimiento-porcentaje').textContent = `+${crecimientoPorcentaje.toFixed(2)}%`;
+                
+                // Actualizar detalles de inversión
+                document.getElementById('resultado-capital').textContent = formatter.format(resultados.capital_inicial);
+                document.getElementById('resultado-plazo').textContent = `${resultados.plazo_meses} meses (${resultados.plazo_anios} años)`;
+                document.getElementById('resultado-rentabilidad').textContent = `${resultados.rentabilidad_anual}%`;
+                document.getElementById('resultado-capitalizacion').textContent = reinversionCheck.checked ? 'Sí' : 'No';
+                document.getElementById('resultado-riesgo').textContent = resultados.riesgo;
+                
+                // Aplicar clase de color según nivel de riesgo
+                const riesgoElement = document.getElementById('resultado-riesgo');
+                riesgoElement.className = '';
+                
+                switch(resultados.riesgo.toLowerCase()) {
+                    case 'bajo':
+                        riesgoElement.classList.add('text-success');
+                        break;
+                    case 'medio':
+                        riesgoElement.classList.add('text-warning');
+                        break;
+                    case 'alto':
+                        riesgoElement.classList.add('text-danger');
+                        break;
+                }
+                
+                // Llenar tabla de detalle
+                fillDetalleTable('tabla-resultados');
+                
+                // Actualizar gráfico de resultados
+                updateResultadoChart(resultados);
+                
+                // Hacer scroll suave hacia los resultados
+                document.getElementById('step-3').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            
+            // Función mejorada para llenar la tabla de detalle
+            function fillDetalleTable(tableId) {
+                if (!resultadosCalculados || !resultadosCalculados.resultados_mensuales) return;
+                
+                const tabla = document.getElementById(tableId);
+                if (!tabla) return;
+                
+                const tablaBody = tabla.querySelector('tbody');
+                if (!tablaBody) return;
+                
+                tablaBody.innerHTML = '';
+                
+                resultadosCalculados.resultados_mensuales.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    
+                    // Alternar color de fondo para mayor legibilidad
+                    if (index % 2 === 0) {
+                        row.classList.add('table-light');
+                    }
+                    
+                    row.innerHTML = `
+                        <td class="text-center">${item.mes}</td>
+                        <td class="text-end">${formatter.format(item.capital_inicial)}</td>
+                        <td class="text-end">${formatter.format(item.interes)}</td>
+                        <td class="text-end fw-bold">${formatter.format(item.capital_final)}</td>
+                    `;
+                    
+                    tablaBody.appendChild(row);
+                });
+            }
+            
+            // Función mejorada para actualizar el gráfico de resultados
+            function updateResultadoChart(resultados) {
+                const ctx = document.getElementById('resultadoChart');
+                if (!ctx) return;
+                
+                const ctxContext = ctx.getContext('2d');
+                
+                // Preparar datos para el gráfico
+                const labels = [];
+                const capitalData = [];
+                const interesData = [];
+                
+                // Determinar cuántos puntos mostrar según la duración
+                let step = 1;
+                if (resultados.resultados_mensuales.length > 36) {
+                    step = Math.ceil(resultados.resultados_mensuales.length / 12);
+                } else if (resultados.resultados_mensuales.length > 12) {
+                    step = 3;
+                }
+                
+                for (let i = 0; i < resultados.resultados_mensuales.length; i += step) {
+                    const item = resultados.resultados_mensuales[i];
+                    labels.push(`Mes ${item.mes}`);
+                    capitalData.push(item.capital_inicial);
+                    interesData.push(item.capital_final - item.capital_inicial);
+                }
+                
+                // Asegurarse de incluir el último mes
+                const lastItem = resultados.resultados_mensuales[resultados.resultados_mensuales.length - 1];
+                if (!labels.includes(`Mes ${lastItem.mes}`)) {
+                    labels.push(`Mes ${lastItem.mes}`);
+                    capitalData.push(lastItem.capital_inicial);
+                    interesData.push(lastItem.capital_final - lastItem.capital_inicial);
+                }
+                
+                // Destruir gráfico anterior si existe
+                if (resultadoChart) {
+                    resultadoChart.destroy();
+                }
+                
+                // Crear nuevo gráfico con aspecto mejorado
+                resultadoChart = new Chart(ctxContext, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Capital',
+                                data: capitalData,
+                                backgroundColor: '#007bff',
+                                borderColor: '#0056b3',
+                                borderWidth: 1,
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Intereses',
+                                data: interesData,
+                                backgroundColor: '#28a745',
+                                borderColor: '#1e7e34',
+                                borderWidth: 1,
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11
+                                    },
+                                    color: '#666'
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                grid: {
+                                    borderDash: [3, 3],
+                                    color: '#e0e0e0'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatter.format(value);
+                                    },
+                                    font: {
+                                        size: 11
+                                    },
+                                    color: '#666'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false // Ocultar leyenda ya que tenemos una personalizada
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 51, 102, 0.8)',
+                                titleFont: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                bodyFont: {
+                                    size: 13
+                                },
+                                padding: 12,
+                                cornerRadius: 6,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${formatter.format(context.raw)}`;
+                                    },
+                                    afterLabel: function(context) {
+                                        if (context.datasetIndex === 1) { // Solo para el dataset de intereses
+                                            const totalValue = context.parsed._stacked.end;
+                                            return `Total acumulado: ${formatter.format(totalValue)}`;
+                                        }
+                                        return '';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            
+            // Función para inicializar tooltips y toasts
+            function initializeTooltipsAndToasts() {
+                // Inicializar tooltips de Bootstrap
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+                
+                // Crear contenedor para toasts si no existe
+                if (!document.getElementById('toast-container')) {
+                    const toastContainer = document.createElement('div');
+                    toastContainer.id = 'toast-container';
+                    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    document.body.appendChild(toastContainer);
+                }
+            }
+            
+            // Función para mostrar toasts
+            function showToast(type, message) {
+                const toastContainer = document.getElementById('toast-container');
+                
+                // Crear el toast
+                const toastId = 'toast-' + Date.now();
+                const toastEl = document.createElement('div');
+                toastEl.id = toastId;
+                toastEl.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : 'success'} border-0`;
+                toastEl.setAttribute('role', 'alert');
+                toastEl.setAttribute('aria-live', 'assertive');
+                toastEl.setAttribute('aria-atomic', 'true');
+                
+                // Contenido del toast
+                toastEl.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                `;
+                
+                // Agregar el toast al contenedor
+                toastContainer.appendChild(toastEl);
+                
+                // Inicializar y mostrar el toast
+                const toast = new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+                
+                // Eliminar el toast del DOM cuando se oculte
+                toastEl.addEventListener('hidden.bs.toast', function() {
+                    toastEl.remove();
+                });
+            }
+            
+            // Función para obtener el valor de una cookie
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            // Iniciar en el paso 1
+            goToStep(1);
+        });
+    </script>
 {% endblock %}

@@ -1,46 +1,40 @@
 from django.db import models
-from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class TipoInversion(models.Model):
     nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True, null=True)
-    tasa_rendimiento = models.DecimalField(max_digits=5, decimal_places=2, help_text="Tasa anual")
+    descripcion = models.TextField()
+    rentabilidad_anual_minima = models.DecimalField(max_digits=5, decimal_places=2)
+    rentabilidad_anual_maxima = models.DecimalField(max_digits=5, decimal_places=2)
     plazo_minimo = models.IntegerField(help_text="Plazo mínimo en meses")
     plazo_maximo = models.IntegerField(help_text="Plazo máximo en meses")
     monto_minimo = models.DecimalField(max_digits=10, decimal_places=2)
-    activo = models.BooleanField(default=True)
+    monto_maximo = models.DecimalField(max_digits=10, decimal_places=2)
+    riesgo = models.CharField(max_length=20, choices=[
+        ('BAJO', 'Bajo'),
+        ('MEDIO', 'Medio'),
+        ('ALTO', 'Alto')
+    ])
+    es_activo = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.nombre} - {self.tasa_rendimiento}%"
+        return self.nombre
     
     class Meta:
         verbose_name = "Tipo de Inversión"
         verbose_name_plural = "Tipos de Inversión"
 
-class PlazoInversion(models.Model):
-    tipo_inversion = models.ForeignKey(TipoInversion, on_delete=models.CASCADE, related_name='plazos')
-    plazo_meses = models.IntegerField()
-    tasa_rendimiento = models.DecimalField(max_digits=5, decimal_places=2, help_text="Tasa específica para este plazo")
-    
-    def __str__(self):
-        return f"{self.tipo_inversion.nombre} - {self.plazo_meses} meses - {self.tasa_rendimiento}%"
-    
-    class Meta:
-        verbose_name = "Plazo de Inversión"
-        verbose_name_plural = "Plazos de Inversión"
-        unique_together = ['tipo_inversion', 'plazo_meses']
 
-class Inversion(models.Model):
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    tipo_inversion = models.ForeignKey(TipoInversion, on_delete=models.PROTECT)
-    monto = models.DecimalField(max_digits=10, decimal_places=2)
-    plazo = models.IntegerField(help_text="Plazo en meses")
-    tasa_rendimiento = models.DecimalField(max_digits=5, decimal_places=2)
-    fecha_simulacion = models.DateTimeField(auto_now_add=True)
+class PerfilRiesgo(models.Model):
+    nombre = models.CharField(max_length=50)
+    descripcion = models.TextField()
+    nivel_riesgo = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    tipos_inversion_recomendados = models.ManyToManyField(TipoInversion, related_name="perfiles_riesgo")
     
     def __str__(self):
-        return f"Inversión {self.tipo_inversion.nombre} - ${self.monto} - {self.plazo} meses"
+        return self.nombre
     
     class Meta:
-        verbose_name = "Inversión"
-        verbose_name_plural = "Inversiones"
+        verbose_name = "Perfil de riesgo"
+        verbose_name_plural = "Perfiles de riesgo"

@@ -1,0 +1,32 @@
+[
+    {
+        "model": "inversiones.perfilriesgo",
+        "pk": 1,
+        "fields": {
+            "nombre": "Conservador",
+            "descripcion": "Perfil orientado a la preservación del capital con exposición mínima al riesgo. Prefiere inversiones seguras aunque ofrezcan menor rentabilidad.",
+            "nivel_riesgo": 1,
+            "tipos_inversion_recomendados": [1, 4]
+        }
+    },
+    {
+        "model": "inversiones.perfilriesgo",
+        "pk": 2,
+        "fields": {
+            "nombre": "Moderado",
+            "descripcion": "Perfil que busca un balance entre seguridad y crecimiento moderado del capital, tolerando cierta volatilidad en busca de mejores rendimientos.",
+            "nivel_riesgo": 3,
+            "tipos_inversion_recomendados": [1, 2, 4, 5]
+        }
+    },
+    {
+        "model": "inversiones.perfilriesgo",
+        "pk": 3,
+        "fields": {
+            "nombre": "Agresivo",
+            "descripcion": "Perfil orientado al crecimiento significativo del capital, con alta tolerancia a la volatilidad y disposición a asumir riesgos importantes en busca de altos rendimientos.",
+            "nivel_riesgo": 5,
+            "tipos_inversion_recomendados": [2, 3, 5]
+        }
+    }
+]

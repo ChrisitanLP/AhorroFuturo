@@ -1,0 +1,87 @@
+[
+    {
+        "model": "inversiones.tipoinversion",
+        "pk": 1,
+        "fields": {
+            "nombre": "Depósito a Plazo Fijo",
+            "descripcion": "Inversión segura con rendimiento fijo a plazo.",
+            "rentabilidad_anual_minima": 3.50,
+            "rentabilidad_anual_maxima": 5.50,
+            "plazo_minimo": 1,
+            "plazo_maximo": 36,
+            "monto_minimo": 500.00,
+            "monto_maximo": 20000.00,
+            "riesgo": "BAJO",
+            "es_activo": true,
+            "fecha_creacion": "2025-04-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "inversiones.tipoinversion",
+        "pk": 2,
+        "fields": {
+            "nombre": "Fondo de Inversión Corporativo",
+            "descripcion": "Fondo colectivo con bonos empresariales.",
+            "rentabilidad_anual_minima": 6.00,
+            "rentabilidad_anual_maxima": 9.50,
+            "plazo_minimo": 6,
+            "plazo_maximo": 60,
+            "monto_minimo": 5000.00,
+            "monto_maximo": 25000.00,
+            "riesgo": "MEDIO",
+            "es_activo": true,
+            "fecha_creacion": "2025-04-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "inversiones.tipoinversion",
+        "pk": 3,
+        "fields": {
+            "nombre": "Acciones Bursátiles",
+            "descripcion": "Compra de acciones con alta rentabilidad y riesgo.",
+            "rentabilidad_anual_minima": 8.00,
+            "rentabilidad_anual_maxima": 15.00,
+            "plazo_minimo": 12,
+            "plazo_maximo": 120,
+            "monto_minimo": 1000.00,
+            "monto_maximo": 10000.00,
+            "riesgo": "ALTO",
+            "es_activo": true,
+            "fecha_creacion": "2025-04-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "inversiones.tipoinversion",
+        "pk": 4,
+        "fields": {
+            "nombre": "Bonos Gubernamentales",
+            "descripcion": "Títulos estatales de bajo riesgo y retorno fijo.",
+            "rentabilidad_anual_minima": 2.50,
+            "rentabilidad_anual_maxima": 5.00,
+            "plazo_minimo": 12,
+            "plazo_maximo": 60,
+            "monto_minimo": 1000.00,
+            "monto_maximo": 20000.00,
+            "riesgo": "BAJO",
+            "es_activo": true,
+            "fecha_creacion": "2025-04-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "inversiones.tipoinversion",
+        "pk": 5,
+        "fields": {
+            "nombre": "Fondo Inmobiliario",
+            "descripcion": "Inversión en bienes raíces para renta o ganancia.",
+            "rentabilidad_anual_minima": 7.00,
+            "rentabilidad_anual_maxima": 12.00,
+            "plazo_minimo": 24,
+            "plazo_maximo": 120,
+            "monto_minimo": 1000.00,
+            "monto_maximo": 10000.00,
+            "riesgo": "MEDIO",
+            "es_activo": true,
+            "fecha_creacion": "2025-04-01T00:00:00Z"
+        }
+    }
+]
