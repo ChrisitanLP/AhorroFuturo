@@ -19,6 +19,12 @@
     margin-top: -25px;
 }
 
+.text-muted.small {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
 .simulador-content {
     position: relative;
     z-index: 2;
@@ -793,11 +799,29 @@
     font-family: inherit;
 }
 
+.modal-xl {
+    max-width: 90%;
+}
 
+.modal-header{
+    text-align: center;
+    margin: 1px 0;
+}
 
+.modal-litle-section{
+    text-align: center;
+    margin: 1px 0;
+}
 
+.content-modal{
+    padding: 15px 55px;
+}
 
-
+.card .card-title {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
 
 
 /* Responsive */

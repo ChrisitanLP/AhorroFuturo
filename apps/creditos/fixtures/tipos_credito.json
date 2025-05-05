@@ -5,10 +5,17 @@
         "fields": {
             "nombre": "Vivienda de interés social",
             "tasa_interes_referencial": 4.99,
+            "tasa_interes_minima": 4.88,
+            "tasa_interes_maxima": 5.00,
             "plazo_minimo": 60,
             "plazo_maximo": 300,
             "monto_minimo": 27058.00,
-            "monto_maximo": 130000.00
+            "monto_maximo": 100000.00,
+            "seguros": {
+                "desgravamen": 0.20,
+                "incendio": 0.10,
+                "bien": 0.15
+            }
         }
     },
     {
@@ -17,10 +24,16 @@
         "fields": {
             "nombre": "Línea abierta",
             "tasa_interes_referencial": 8.95,
+            "tasa_interes_minima": 8.00,
+            "tasa_interes_maxima": 10.50,
             "plazo_minimo": 12,
             "plazo_maximo": 120,
             "monto_minimo": 5000.00,
-            "monto_maximo": 100000.00
+            "monto_maximo": 100000.00,
+            "seguros": {
+                "desgravamen": 0.20,
+                "bien": 0.15
+            }
         }
     },
     {
@@ -29,10 +42,17 @@
         "fields": {
             "nombre": "Hipotecario vivienda",
             "tasa_interes_referencial": 7.75,
+            "tasa_interes_minima": 5.99,
+            "tasa_interes_maxima": 8.99,
             "plazo_minimo": 36,
             "plazo_maximo": 300,
             "monto_minimo": 50000.00,
-            "monto_maximo": 500000.00
+            "monto_maximo": 500000.00,
+            "seguros": {
+                "desgravamen": 0.20,
+                "incendio": 0.10,
+                "bien": 0.15
+            }
         }
     },
     {
@@ -41,10 +61,17 @@
         "fields": {
             "nombre": "Vivienda de interés público",
             "tasa_interes_referencial": 4.87,
+            "tasa_interes_minima": 4.85,
+            "tasa_interes_maxima": 5.00,
             "plazo_minimo": 60,
             "plazo_maximo": 240,
             "monto_minimo": 30000.00,
-            "monto_maximo": 90000.00
+            "monto_maximo": 90000.00,
+            "seguros": {
+                "desgravamen": 0.20,
+                "incendio": 0.10,
+                "bien": 0.15
+            }
         }
     },
     {
@@ -53,10 +80,50 @@
         "fields": {
             "nombre": "Educación superior",
             "tasa_interes_referencial": 6.50,
+            "tasa_interes_minima": 6.00,
+            "tasa_interes_maxima": 8.00,
             "plazo_minimo": 24,
             "plazo_maximo": 120,
             "monto_minimo": 3000.00,
-            "monto_maximo": 50000.00
+            "monto_maximo": 50000.00,
+            "seguros": {
+                "desgravamen": 0.20
+            }
+        }
+    },
+    {
+        "model": "creditos.tipocredito",
+        "pk": 6,
+        "fields": {
+            "nombre": "Quirografario",
+            "tasa_interes_referencial": 8.00,
+            "tasa_interes_minima": 5.99,
+            "tasa_interes_maxima": 9.75,
+            "plazo_minimo": 12,
+            "plazo_maximo": 60,
+            "monto_minimo": 500.00,
+            "monto_maximo": 46000.00,
+            "seguros": {
+                "desgravamen": 0.20
+            }
+        }
+    },
+    {
+        "model": "creditos.tipocredito",
+        "pk": 7,
+        "fields": {
+            "nombre": "Vehicular",
+            "tasa_interes_referencial": 10.50,
+            "tasa_interes_minima": 9.00,
+            "tasa_interes_maxima": 12.00,
+            "plazo_minimo": 12,
+            "plazo_maximo": 84,
+            "monto_minimo": 8000.00,
+            "monto_maximo": 50000.00,
+            "seguros": {
+                "desgravamen": 0.20,
+                "vehicular": 1.00
+            }
         }
     }
 ]

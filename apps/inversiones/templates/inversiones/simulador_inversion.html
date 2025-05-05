@@ -309,39 +309,10 @@
                                                 </div>
 
                                                 <div class="text-center mt-4">
-                                                    <button type="button" class="btn btn-outline-primary" id="ver-tabla-detalle">
+                                                    <button type="button" class="btn btn-outline-blue btn-sm" id="ver-tabla-detalle" data-bs-toggle="modal" data-bs-target="#modalTablaDetalle">
                                                         <i class="fas fa-table me-2"></i>Ver detalle mes a mes
                                                     </button>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Tabla de Detalle (oculta por defecto) -->
-                                <div class="tabla-detalle mt-4" style="display: none;">
-                                    <div class="rounded-lg">
-                                        <div class="">
-                                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                                <h5 class="mb-0">
-                                                    Detalle mes a mes
-                                                </h5>
-                                            </div>
-                                            <hr>
-                                            <div class="table-responsive">
-                                                <table class="table table-hover" id="tabla-resultados">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="text-center">Periodo</th>
-                                                            <th class="text-end">Capital</th>
-                                                            <th class="text-end">Interés generado</th>
-                                                            <th class="text-end">Capital final</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <!-- Aquí se llenarán los resultados -->
-                                                    </tbody>
-                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -386,15 +357,72 @@
     </div>
 </div>
 
-<!-- Modal para tabla de amortización -->
+<!-- Modal mejorado para tabla de detalle -->
 <div class="modal fade" id="modalTablaDetalle" tabindex="-1" aria-labelledby="modalTablaDetalleLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content content-modal">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTablaDetalleLabel">Detalle mes a mes de tu inversión</h5>
+                <h5 class="modal-title fw-bold" id="modalTablaDetalleLabel">
+                    <i class="fas fa-calculator me-2"></i>Tabla de Inversión
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <!-- Resumen de los datos de la inversión -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold mb-3">Información de la Inversión</h6>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Tipo de Inversión</p>
+                                        <p id="modal-tipo-inversion">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Monto Invertido</p>
+                                        <p id="modal-monto-inversion">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Plazo</p>
+                                        <p id="modal-plazo-inversion">-</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Tasa de Rentabilidad</p>
+                                        <p id="modal-tasa-inversion">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold mb-3">Detalle de la inversión</h6>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Capital invertido:</p>
+                                        <p id="modal-capital-invertido">$0.00</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Total de intereses:</p>
+                                        <p id="modal-total-intereses">$0.00</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Reinversión de intereses:</p>
+                                        <p id="modal-reinversion">No</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-muted mb-1 small">Capital final:</p>
+                                        <p id="modal-capital-final">$0.00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de detalle mes a mes -->
                 <div class="table-responsive">
                     <table class="table table-striped table-hover" id="modal-tabla-resultados">
                         <thead class="table-light">
@@ -406,13 +434,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Aquí se llenarán los resultados -->
+                            <!-- Aquí se llenarán los resultados dinámicamente -->
                         </tbody>
                     </table>
                 </div>
+                
+                <div class="mt-3 modal-litle-section">
+                    <p class="text-muted small fst-italic"><i class="fas fa-info-circle me-1"></i>Valores referenciales, estos no constituyen una oferta formal de inversión. La rentabilidad está sujeta a condiciones de mercado y políticas de la entidad.</p>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-blue" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-yellow" id="btn-descargar-detalle">
+                    <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+                </button>
             </div>
         </div>
     </div>
@@ -456,6 +493,10 @@
 
 {% block extra_js %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <script>
         // Simulador de Inversión - JavaScript
         document.addEventListener('DOMContentLoaded', function() {
@@ -487,6 +528,52 @@
                 currency: 'USD',
                 minimumFractionDigits: 2
             });
+        
+            // Función para eliminar formato de moneda
+            function unformatMoney(value) {
+                if (!value) return '';
+                return value.toString().replace(/[^\d.]/g, '');
+            }
+            
+            // Función para formatear valor como moneda
+            function formatMoney(value) {
+                if (!value) return '';
+                const numValue = parseFloat(value);
+                if (isNaN(numValue)) return '';
+                return formatter.format(numValue);
+            }
+
+            function reiniciarSimulador() {
+                // Campos relacionados con inversión
+                $("#monto_inversion").val('');
+                $("#plazo_meses").val('');
+                $("#tasa_rentabilidad").val('');
+                $("#preview-capital").text('');
+                $("#preview-intereses").text('');
+                $("#preview-total").text('');
+                $("#previewChart").empty();
+
+                // Desactivar checkbox de reinversión
+                if (reinversionCheck) {
+                    reinversionCheck.checked = false;
+                }
+
+                // Limpiar gráficos
+                if (previewChart) {
+                    previewChart.destroy();
+                    previewChart = null;
+                }
+                
+                if (resultadoChart) {
+                    resultadoChart.destroy();
+                    resultadoChart = null;
+                }
+                
+                // Ocultar tabla de detalle
+                if (tablaDetalle) {
+                    tablaDetalle.style.display = 'none';
+                }
+            }
             
             // Evento para seleccionar un tipo de inversión
             tipoInversionCards.forEach(card => {
@@ -538,53 +625,120 @@
             if (btnRecalcular) {
                 btnRecalcular.addEventListener('click', function() {
                     goToStep(1);
+                    reiniciarSimulador();
                 });
             }
             
             // Eventos para ver tabla de detalle
             if (btnVerTablaDetalle) {
-                btnVerTablaDetalle.addEventListener('click', function() {
-                    tablaDetalle.style.display = tablaDetalle.style.display === 'none' ? 'block' : 'none';
-                    this.innerHTML = tablaDetalle.style.display === 'none' ? 
-                        '<i class="fas fa-table me-2"></i>Ver tabla de detalle' : 
-                        '<i class="fas fa-chevron-up me-2"></i>Ocultar tabla de detalle';
-                });
+                const btnClone = btnVerTablaDetalle.cloneNode(true);
+                btnVerTablaDetalle.parentNode.replaceChild(btnClone, btnVerTablaDetalle);
             }
+
+            // 2. Agregar esta función para llenar el modal cuando se abra
+            document.getElementById('modalTablaDetalle').addEventListener('show.bs.modal', function (event) {
+                if (!resultadosCalculados) return;
+                
+                // Llenar información de la inversión
+                document.getElementById('modal-tipo-inversion').textContent = document.getElementById('tipo-inversion-seleccionado').textContent;
+                document.getElementById('modal-monto-inversion').textContent = formatter.format(resultadosCalculados.capital_inicial);
+                document.getElementById('modal-plazo-inversion').textContent = `${resultadosCalculados.plazo_meses} meses (${resultadosCalculados.plazo_anios} años)`;
+                document.getElementById('modal-tasa-inversion').textContent = `${resultadosCalculados.rentabilidad_anual}%`;
+                
+                // Llenar el resumen
+                document.getElementById('modal-capital-invertido').textContent = formatter.format(resultadosCalculados.capital_inicial);
+                document.getElementById('modal-total-intereses').textContent = formatter.format(resultadosCalculados.interes_total);
+                document.getElementById('modal-reinversion').textContent = reinversionCheck.checked ? 'Sí' : 'No';
+                document.getElementById('modal-capital-final').textContent = formatter.format(resultadosCalculados.capital_final);
+                
+                // Llenar la tabla de resultados
+                fillDetalleTable('modal-tabla-resultados');
+            });
             
-            // Evento para cambio en el monto de inversión
+            // Eventos para el input de monto de inversión (CORREGIDO)
             if (montoInversion) {
-                montoInversion.addEventListener('input', function() {
-                    // Eliminar caracteres no numéricos excepto el punto decimal
-                    this.value = this.value.replace(/[^\d.]/g, '');
+                // INPUT: Solo permitir números y un punto decimal
+                montoInversion.addEventListener('input', function (e) {
+                    // Mantener la posición del cursor
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+                    const originalLength = this.value.length;
+                    
+                    // Solo permitir números y un punto decimal
+                    let value = this.value;
+                    
+                    // Remover caracteres no permitidos
+                    value = value.replace(/[^0-9.]/g, '');
+                    
+                    // Asegurarse de que solo haya un punto decimal
+                    const puntoPosicion = value.indexOf('.');
+                    if (puntoPosicion !== -1) {
+                        const despuesPunto = value.substring(puntoPosicion + 1);
+                        if (despuesPunto.indexOf('.') !== -1) {
+                            value = value.substring(0, puntoPosicion + 1) + 
+                                    despuesPunto.replace(/\./g, '');
+                        }
+                    }
+                    
+                    this.value = value;
+                    
+                    // Restaurar posición del cursor ajustada si hubo cambios
+                    const diff = value.length - originalLength;
+                    if (diff !== 0) {
+                        this.selectionStart = start + diff;
+                        this.selectionEnd = end + diff;
+                    }
+                    
+                    // Actualizar previsualización con el valor actual SIN formatear
                     updatePreview();
                 });
-                
-                // Formatear entrada de monto como moneda
-                montoInversion.addEventListener('blur', function() {
-                    const value = parseFloat(this.value.replace(/[^\d.]/g, ''));
-                    if (!isNaN(value)) {
-                        this.value = formatter.format(value);
+
+                // FOCUS: eliminar formato al enfocar el campo
+                montoInversion.addEventListener('focus', function () {
+                    // Obtener el valor numérico sin el símbolo de moneda y otros caracteres no numéricos
+                    const valorSinFormato = unformatMoney(this.value);
+                    if (parseFloat(valorSinFormato) > 0) {
+                        this.value = valorSinFormato;
+                    } else {
+                        this.value = '';
                     }
                 });
-                
-                montoInversion.addEventListener('focus', function() {
-                    // Quitar formato de moneda para edición
-                    const numericValue = this.value.replace(/[^\d.]/g, '');
-                    this.value = numericValue;
+
+                // BLUR: aplicar formato al salir del campo
+                montoInversion.addEventListener('blur', function () {
+                    const valor = this.value.trim();
+                    if (valor) {
+                        const numeroLimpio = valor.replace(/[^0-9.]/g, '');
+                        if (numeroLimpio) {
+                            this.value = formatMoney(numeroLimpio);
+                        } else {
+                            this.value = '';
+                        }
+                    }
+                    
+                    // Actualizar previsualización después de formatear
+                    updatePreview();
                 });
             }
-            
+
+            // Resto del código se mantiene igual...
             // Evento para cambio en el plazo
             if (plazoSelect) {
                 plazoSelect.addEventListener('change', function() {
-                    updatePreview();
+                    // Evitar recálculos innecesarios si no hay monto ingresado
+                    if (montoInversion.value) {
+                        updatePreview();
+                    }
                 });
             }
-            
+
             // Evento para cambio en la reinversión
             if (reinversionCheck) {
                 reinversionCheck.addEventListener('change', function() {
-                    updatePreview();
+                    // Evitar recálculos innecesarios si no hay monto ingresado
+                    if (montoInversion.value) {
+                        updatePreview();
+                    }
                 });
             }
             
@@ -625,17 +779,29 @@
                             tipoInversionSeleccionado = data.data;
                             setupStep2WithData(tipoInversionSeleccionado);
                         } else {
-                            showToast('error', data.error || 'Error al cargar datos del tipo de inversión');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.error || 'Error al cargar datos del tipo de inversión',
+                                confirmButtonColor: '#3085d6'
+                            });
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showToast('error', 'Error al cargar datos del tipo de inversión');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error al cargar datos del tipo de inversión',
+                            confirmButtonColor: '#3085d6'
+                        });
                     });
             }
             
             // Función para configurar el paso 2 con los datos obtenidos
             function setupStep2WithData(tipoData) {
+                reiniciarSimulador();
+                
                 // Actualizar nombre del tipo de inversión seleccionado
                 document.getElementById('tipo-inversion-seleccionado').textContent = tipoData.nombre;
                 
@@ -697,72 +863,83 @@
             
             // Función para llenar el select de plazos
             function fillPlazoSelect(min, max) {
-                plazoSelect.innerHTML = '<option value="" disabled selected>Selecciona el plazo</option>';
-                
-                // Añadir opciones para cada 3 meses dentro del rango
-                for (let i = min; i <= max; i += 3) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    
-                    // Formatear texto
-                    if (i < 12) {
-                        option.textContent = `${i} meses`;
-                    } else {
-                        const years = Math.floor(i / 12);
-                        const months = i % 12;
-                        
-                        if (months === 0) {
-                            option.textContent = `${years} año${years > 1 ? 's' : ''}`;
-                        } else {
-                            option.textContent = `${years} año${years > 1 ? 's' : ''} y ${months} mes${months > 1 ? 'es' : ''}`;
-                        }
+                const plazoSelect = document.getElementById("plazo");
+                plazoSelect.innerHTML = '<option value="" disabled selected>Selecciona tu plazo</option>';
+            
+                // Plazos comunes cada 12 meses
+                const plazosComunes = [12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144, 156, 168, 180, 192, 204, 216, 228, 240, 252, 264, 276, 288, 300];
+            
+                plazosComunes.forEach(meses => {
+                    if (meses >= min && meses <= max) {
+                        const años = meses / 12;
+                        const option = document.createElement('option');
+                        option.value = meses;
+                        option.textContent = `${años} ${años === 1 ? 'año' : 'años'} (${meses} meses)`;
+                        plazoSelect.appendChild(option);
                     }
-                    
-                    plazoSelect.appendChild(option);
-                }
+                });
             }
             
             // Función para validar el formulario de inversión
             function validateInversionForm() {
                 if (!tipoInversionSeleccionado) {
-                    showToast('error', 'Debe seleccionar un tipo de inversión');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tipo de inversión requerido',
+                        text: 'Debe seleccionar un tipo de inversión',
+                    });
                     return false;
                 }
                 
                 // Validar monto
-                const montoValue = parseFloat(montoInversion.value.replace(/[^\d.]/g, ''));
+                const montoValue = parseFloat(unformatMoney(montoInversion.value));
                 
                 if (isNaN(montoValue) || montoValue <= 0) {
-                    showToast('error', 'Ingrese un monto válido para la inversión');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Monto inválido',
+                        text: 'Ingrese un monto válido para la inversión',
+                    });
                     montoInversion.focus();
                     return false;
                 }
                 
                 if (montoValue < tipoInversionSeleccionado.monto_minimo || montoValue > tipoInversionSeleccionado.monto_maximo) {
-                    showToast('error', `El monto debe estar entre ${formatter.format(tipoInversionSeleccionado.monto_minimo)} y ${formatter.format(tipoInversionSeleccionado.monto_maximo)}`);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Monto fuera de rango',
+                        text: `El monto debe estar entre ${formatter.format(tipoInversionSeleccionado.monto_minimo)} y ${formatter.format(tipoInversionSeleccionado.monto_maximo)}`,
+                    });
                     montoInversion.focus();
                     return false;
                 }
                 
                 // Validar plazo
                 if (!plazoSelect.value) {
-                    showToast('error', 'Debe seleccionar un plazo para la inversión');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Plazo requerido',
+                        text: 'Debe seleccionar un plazo para la inversión',
+                    });
                     plazoSelect.focus();
                     return false;
                 }
                 
                 return true;
             }
-            
-            // Función para actualizar la previsualización
+
+            // Función para actualizar la previsualización (MODIFICADA)
             function updatePreview() {
                 if (!tipoInversionSeleccionado) return;
                 
-                const montoValue = parseFloat(montoInversion.value.replace(/[^\d.]/g, '')) || 0;
+                // Extracción correcta del valor numérico del monto
+                const montoValueStr = unformatMoney(montoInversion.value);
+                const montoValue = parseFloat(montoValueStr) || 0;
+                
                 const plazoValue = parseInt(plazoSelect.value) || 0;
                 const reinversionValue = reinversionCheck.checked;
                 
-                // Actualizar valores en la previsualización
+                // Actualizar valores en la previsualización con el formato correcto
                 document.getElementById('preview-capital').textContent = formatter.format(montoValue);
                 
                 // Calcular intereses estimados
@@ -794,10 +971,10 @@
                     document.getElementById('preview-total').textContent = formatter.format(montoValue);
                     
                     // Resetear gráfico
-                    updatePreviewChart(0, 0);
+                    updatePreviewChart(montoValue, 0);
                 }
             }
-            
+                        
             // Función para actualizar el gráfico de previsualización
             function updatePreviewChart(capital, interes) {
                 const ctx = document.getElementById('previewChart').getContext('2d');
@@ -875,12 +1052,22 @@
                         resultadosCalculados = response.data;
                         mostrarResultados(resultadosCalculados);
                     } else {
-                        showToast('error', response.error || 'Error al calcular inversión');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.error || 'Error al calcular inversión',
+                            confirmButtonColor: '#d33'
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showToast('error', error.message || 'Error al procesar la solicitud');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Error al procesar la solicitud',
+                        confirmButtonColor: '#d33'
+                    });
                 });
             }
             
@@ -930,6 +1117,7 @@
             
             
             // Función mejorada para llenar la tabla de detalle
+            // 3. Modificar la función fillDetalleTable para que funcione con cualquier tabla
             function fillDetalleTable(tableId) {
                 if (!resultadosCalculados || !resultadosCalculados.resultados_mensuales) return;
                 
@@ -940,6 +1128,8 @@
                 if (!tablaBody) return;
                 
                 tablaBody.innerHTML = '';
+
+                const hayCapitalizacion = reinversionCheck.checked;
                 
                 resultadosCalculados.resultados_mensuales.forEach((item, index) => {
                     const row = document.createElement('tr');
@@ -949,139 +1139,478 @@
                         row.classList.add('table-light');
                     }
                     
-                    row.innerHTML = `
-                        <td class="text-center">${item.mes}</td>
-                        <td class="text-end">${formatter.format(item.capital_inicial)}</td>
-                        <td class="text-end">${formatter.format(item.interes)}</td>
-                        <td class="text-end fw-bold">${formatter.format(item.capital_final)}</td>
-                    `;
+                    // Contenido de la fila según si hay capitalización o no
+                    if (hayCapitalizacion) {
+                        // Con capitalización: mostrar capital inicial, interés y capital final de cada mes
+                        row.innerHTML = `
+                            <td class="text-center">${item.mes}</td>
+                            <td class="text-end">${formatter.format(item.capital_inicial)}</td>
+                            <td class="text-end">${formatter.format(item.interes)}</td>
+                            <td class="text-end fw-bold">${formatter.format(item.capital_final)}</td>
+                        `;
+                    } else {
+                        // Sin capitalización: mostrar capital constante e interés mensual
+                        // Y el capital acumulado hasta ese mes
+                        const interesAcumulado = (item.interes * item.mes);
+                        const capitalHastaAhora = resultadosCalculados.capital_inicial + interesAcumulado;
+                        
+                        row.innerHTML = `
+                            <td class="text-center">${item.mes}</td>
+                            <td class="text-end">${formatter.format(item.capital_inicial)}</td>
+                            <td class="text-end">${formatter.format(item.interes)}</td>
+                            <td class="text-end fw-bold">${formatter.format(capitalHastaAhora)}</td>
+                        `;
+                    }
                     
                     tablaBody.appendChild(row);
                 });
             }
-            
+
+            // 4. Agregar manejo para el botón de descarga de PDF
+            document.getElementById('btn-descargar-detalle').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Generando PDF',
+                    text: 'Estamos preparando tu documento...',
+                    timerProgressBar: true,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        setTimeout(() => {
+                            Swal.close();
+                            generarPDF();
+                        }, 1500);
+                    }
+                });
+            });
+
+            function generarPDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Configuración de colores y estilos
+                const colorPrimario = [20, 66, 114]; // Azul Ahorro Futuro
+                const colorSecundario = [250, 186, 10]; // Amarillo Ahorro Futuro
+                const colorTexto = [60, 60, 60]; // Gris oscuro
+                const colorSubtitulo = [100, 100, 100]; // Gris medio
+                
+                // Función para agregar el membrete
+                function agregarMembrete() {
+                    // Fondo del membrete
+                    doc.setFillColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                    doc.rect(0, 0, doc.internal.pageSize.getWidth(), 35, 'F');
+                    
+                    // Franja decorativa amarilla
+                    doc.setFillColor(colorSecundario[0], colorSecundario[1], colorSecundario[2]);
+                    doc.rect(0, 35, doc.internal.pageSize.getWidth(), 5, 'F');
+                    
+                    // Texto del membrete
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(22);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text("AHORRO FUTURO", 14, 20);
+                    
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text("Institución Financiera", 14, 28);
+                    
+                    // Fecha en el membrete
+                    const fechaActual = new Date().toLocaleDateString();
+                    doc.setFontSize(10);
+                    doc.text(`Generado: ${fechaActual}`, doc.internal.pageSize.getWidth() - 60, 20);
+                }
+                
+                // Función para agregar pie de página en cada página
+                function agregarPieDePagina(pageNumber, pageCount) {
+                    // Línea separadora
+                    doc.setDrawColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                    doc.setLineWidth(0.5);
+                    doc.line(14, doc.internal.pageSize.getHeight() - 20, doc.internal.pageSize.getWidth() - 14, doc.internal.pageSize.getHeight() - 20);
+                    
+                    // Información de contacto
+                    doc.setFontSize(8);
+                    doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                    doc.text("Ahorro Futuro • Tel: (01) 234-5678 • www.ahorrofuturo.com", 14, doc.internal.pageSize.getHeight() - 14);
+                    
+                    // Número de página
+                    doc.text(`Página ${pageNumber}`, doc.internal.pageSize.getWidth() - 45, doc.internal.pageSize.getHeight() - 14);
+                }
+                
+                // Agregar membrete
+                agregarMembrete();
+                
+                // Título del documento
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text("TABLA DE INVERSIÓN", doc.internal.pageSize.getWidth() / 2, 50, { align: 'center' });
+                
+                const startY = 60;
+                doc.setDrawColor(240, 240, 240);
+                doc.setFillColor(248, 248, 248);
+                doc.roundedRect(14, startY, doc.internal.pageSize.getWidth() - 28, 40, 3, 3, 'FD');
+                
+                // Información de la inversión - Título
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.setFontSize(12);
+                doc.text("Información de la Inversión", 20, startY + 10);
+                
+                // Información de la inversión - Contenido
+                doc.setTextColor(colorTexto[0], colorTexto[1], colorTexto[2]);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                
+                // Obtener valores del simulador
+                const tipoInversion = document.getElementById('tipo-inversion-seleccionado').textContent;
+                const montoInversion = document.getElementById('preview-capital').textContent;
+                const plazoInversion = document.getElementById('resultado-plazo').textContent;
+                const rentabilidadAnual = document.getElementById('resultado-rentabilidad').textContent;
+                const capitalizacion = document.getElementById('resultado-capitalizacion').textContent;
+                const nivelRiesgo = document.getElementById('resultado-riesgo').textContent;
+                
+                // Columna izquierda
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                doc.text("Tipo de Inversión:", 25, startY + 20);
+                doc.text("Capital Inicial:", 25, startY + 30);
+                
+                // Columna derecha
+                doc.text("Plazo:", doc.internal.pageSize.getWidth() / 2 + 10, startY + 20);
+                doc.text("Tasa de Rentabilidad:", doc.internal.pageSize.getWidth() / 2 + 10, startY + 30);
+                
+                // Valores columna izquierda
+                doc.setTextColor(colorTexto[0], colorTexto[1], colorTexto[2]);
+                doc.setFont('helvetica', 'bold');
+                doc.text(tipoInversion, 65, startY + 20);
+                doc.text(montoInversion, 80, startY + 30);
+                
+                // Valores columna derecha
+                doc.text(plazoInversion, doc.internal.pageSize.getWidth() / 2 + 55, startY + 20);
+                doc.text(rentabilidadAnual, doc.internal.pageSize.getWidth() / 2 + 70, startY + 30);
+                
+                // Resumen de la inversión - Contenedor
+                const resumenY = startY + 50;
+                doc.setDrawColor(240, 240, 240);
+                doc.setFillColor(248, 248, 248);
+                doc.roundedRect(14, resumenY, doc.internal.pageSize.getWidth() - 28, 40, 3, 3, 'FD');
+                
+                // Resumen de la inversión - Título
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.setFontSize(12);
+                doc.text("Resumen de la Inversión", 20, resumenY + 10);
+                
+                // Resumen de la inversión - Contenido
+                const interesTotal = document.getElementById('final-intereses').textContent;
+                const capitalFinal = document.getElementById('final-monto').textContent;
+                const crecimientoPorcentaje = document.getElementById('crecimiento-porcentaje').textContent;
+                
+                // Columna izquierda
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                doc.text("Crecimiento:", 25, resumenY + 20);
+                doc.text("Intereses Ganados:", 25, resumenY + 30);
+                
+                // Columna derecha
+                doc.text("Nivel de Riesgo:", doc.internal.pageSize.getWidth() / 2 + 10, resumenY + 20);
+                doc.text("Capital Final:", doc.internal.pageSize.getWidth() / 2 + 10, resumenY + 30);
+                
+                // Valores columna izquierda
+                doc.setTextColor(colorTexto[0], colorTexto[1], colorTexto[2]);
+                doc.setFont('helvetica', 'bold');
+
+                doc.setTextColor(40, 80, 80);
+                doc.text(crecimientoPorcentaje, 80, resumenY + 20);
+                
+                doc.text(interesTotal, 80, resumenY + 30);
+                
+                // Valores columna derecha - Nivel de riesgo con color correspondiente
+                let colorRiesgo;
+                switch(nivelRiesgo.toLowerCase()) {
+                    case 'bajo':
+                        colorRiesgo = [40, 167, 69]; // Verde para riesgo bajo
+                        break;
+                    case 'medio':
+                        colorRiesgo = [255, 193, 7]; // Amarillo para riesgo medio
+                        break;
+                    case 'alto':
+                        colorRiesgo = [220, 53, 69]; // Rojo para riesgo alto
+                        break;
+                    default:
+                        colorRiesgo = colorTexto; // Color de texto predeterminado
+                }
+                
+                doc.setTextColor(colorRiesgo[0], colorRiesgo[1], colorRiesgo[2]);
+                doc.text(nivelRiesgo, doc.internal.pageSize.getWidth() / 2 + 50, resumenY + 20);
+                
+                // Capital final con color primario para destacarlo
+                doc.setTextColor(colorPrimario[0], colorPrimario[1], colorPrimario[2]);
+                doc.text(capitalFinal, doc.internal.pageSize.getWidth() / 2 + 50, resumenY + 30);
+                
+                // Tabla de resultados mensuales
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                
+                // Definir columnas según si hay capitalización o no
+                const hayCapitalizacion = document.getElementById('resultado-capitalizacion').textContent === 'Sí';
+                
+                // Preparar los datos de la tabla
+                let tableBody = [];
+                
+                if (resultadosCalculados && resultadosCalculados.resultados_mensuales) {
+                    resultadosCalculados.resultados_mensuales.forEach(item => {
+                        if (hayCapitalizacion) {
+                            tableBody.push([
+                                item.mes,
+                                formatter.format(item.capital_inicial),
+                                formatter.format(item.interes),
+                                formatter.format(item.capital_final)
+                            ]);
+                        } else {
+                            const interesAcumulado = (item.interes * item.mes);
+                            const capitalHastaAhora = resultadosCalculados.capital_inicial + interesAcumulado;
+                            
+                            tableBody.push([
+                                item.mes,
+                                formatter.format(item.capital_inicial),
+                                formatter.format(item.interes),
+                                formatter.format(capitalHastaAhora)
+                            ]);
+                        }
+                    });
+                }
+
+                // Crear la tabla
+                doc.autoTable({
+                    head: [['Período', 'Capital', 'Interés', 'Capital Acumulado']],
+                    body: tableBody,
+                    startY: resumenY + 50,
+                    theme: 'grid',
+                    headStyles: { 
+                        fillColor: colorPrimario, 
+                        textColor: 255,
+                        fontSize: 10,
+                        fontStyle: 'bold',
+                        halign: 'center'
+                    },
+                    columnStyles: {
+                        0: { halign: 'center' },
+                        1: { halign: 'right' },
+                        2: { halign: 'right' },
+                        3: { halign: 'right' }
+                    },
+                    styles: { 
+                        fontSize: 9,
+                        cellPadding: 4
+                    },
+                    alternateRowStyles: {
+                        fillColor: [248, 248, 248]
+                    },
+                    // Garantizar que la tabla se vea bien en múltiples páginas
+                    didDrawPage: function(data) {
+                        // Agregar membrete en cada nueva página (excepto la primera)
+                        if (data.pageCount > 1 && data.pageNumber > 1) {
+                            agregarMembrete();
+                        }
+                        
+                        // Agregar pie de página en cada página
+                        agregarPieDePagina(data.pageNumber, data.pagesCount);
+                    }
+                });
+                
+                // Agregar disclaimer
+                const finalY = doc.lastAutoTable.finalY + 10;
+                
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'italic');
+                doc.setTextColor(colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+                // Obtener ancho de página
+                const pageWidth = doc.internal.pageSize.getWidth();
+
+                // Primer texto
+                const texto1 = "* Valores referenciales, no son considerados como una oferta formal de inversión.";
+                const textWidth1 = doc.getTextWidth(texto1);
+                const x1 = (pageWidth - textWidth1) / 2;
+                doc.text(texto1, x1, finalY);
+
+                // Segundo texto
+                const texto2 = "La rentabilidad mostrada está sujeta a condiciones de mercado y puede variar en el tiempo.";
+                const textWidth2 = doc.getTextWidth(texto2);
+                const x2 = (pageWidth - textWidth2) / 2;
+                doc.text(texto2, x2, finalY + 4);
+                
+                // Agregar pie de página en la primera página
+                agregarPieDePagina(1, doc.internal.getNumberOfPages());
+                
+                // Descargar documento
+                const fechaFormatada = new Date().toLocaleDateString().replace(/\//g, '-');
+                doc.save(`Inversion-AhorroFuturo-${fechaFormatada}.pdf`);
+            }
+
             // Función mejorada para actualizar el gráfico de resultados
             function updateResultadoChart(resultados) {
                 const ctx = document.getElementById('resultadoChart');
                 if (!ctx) return;
                 
+                // Destruir gráfico anterior si existe
+                if (resultadoChart) {
+                    resultadoChart.destroy();
+                }
+
                 const ctxContext = ctx.getContext('2d');
+                
+                const hayCapitalizacion = reinversionCheck.checked;
+                const mesesTotales = resultados.plazo_meses;
+                
+                // Determinar cuántos puntos mostrar según la duración
+                let puntosMostrar = Math.min(12, mesesTotales); // Máximo 12 puntos por defecto
+                let intervalo = Math.ceil(mesesTotales / puntosMostrar);
                 
                 // Preparar datos para el gráfico
                 const labels = [];
                 const capitalData = [];
                 const interesData = [];
+                const totalData = [];
                 
-                // Determinar cuántos puntos mostrar según la duración
-                let step = 1;
-                if (resultados.resultados_mensuales.length > 36) {
-                    step = Math.ceil(resultados.resultados_mensuales.length / 12);
-                } else if (resultados.resultados_mensuales.length > 12) {
-                    step = 3;
-                }
-                
-                for (let i = 0; i < resultados.resultados_mensuales.length; i += step) {
-                    const item = resultados.resultados_mensuales[i];
-                    labels.push(`Mes ${item.mes}`);
-                    capitalData.push(item.capital_inicial);
-                    interesData.push(item.capital_final - item.capital_inicial);
-                }
-                
-                // Asegurarse de incluir el último mes
-                const lastItem = resultados.resultados_mensuales[resultados.resultados_mensuales.length - 1];
-                if (!labels.includes(`Mes ${lastItem.mes}`)) {
-                    labels.push(`Mes ${lastItem.mes}`);
-                    capitalData.push(lastItem.capital_inicial);
-                    interesData.push(lastItem.capital_final - lastItem.capital_inicial);
-                }
-                
-                // Destruir gráfico anterior si existe
-                if (resultadoChart) {
-                    resultadoChart.destroy();
+                if (hayCapitalizacion) {
+                    // Con capitalización: mostrar evolución del capital + intereses
+                    for (let i = 0; i < resultados.resultados_mensuales.length; i += intervalo) {
+                        const item = resultados.resultados_mensuales[i];
+                        labels.push(`Mes ${item.mes}`);
+                        capitalData.push(resultados.capital_inicial); // Capital inicial es constante
+                        interesData.push(item.capital_final - resultados.capital_inicial); // Intereses acumulados
+                        totalData.push(item.capital_final); // Total acumulado
+                    }
+                    
+                    // Asegurar que se incluye el último mes
+                    const lastItem = resultados.resultados_mensuales[resultados.resultados_mensuales.length - 1];
+                    if (!labels.includes(`Mes ${lastItem.mes}`)) {
+                        labels.push(`Mes ${lastItem.mes}`);
+                        capitalData.push(resultados.capital_inicial);
+                        interesData.push(lastItem.capital_final - resultados.capital_inicial);
+                        totalData.push(lastItem.capital_final);
+                    }
+                } else {
+                    // Sin capitalización: mostrar capital constante y crecimiento lineal de intereses
+                    const interesesPorMes = resultados.interes_total / mesesTotales;
+                    
+                    for (let i = 0; i <= mesesTotales; i += intervalo) {
+                        // Ajustar el último punto para que no exceda el total de meses
+                        const mes = Math.min(i, mesesTotales);
+                        
+                        labels.push(`Mes ${mes}`);
+                        capitalData.push(resultados.capital_inicial);
+                        interesData.push(interesesPorMes * mes);
+                        totalData.push(resultados.capital_inicial + (interesesPorMes * mes));
+                    }
+                    
+                    // Asegurar que el último punto es exactamente el mes final
+                    if (!labels.includes(`Mes ${mesesTotales}`)) {
+                        labels.push(`Mes ${mesesTotales}`);
+                        capitalData.push(resultados.capital_inicial);
+                        interesData.push(resultados.interes_total);
+                        totalData.push(resultados.capital_final);
+                    }
                 }
                 
                 // Crear nuevo gráfico con aspecto mejorado
-                resultadoChart = new Chart(ctxContext, {
-                    type: 'bar',
+                resultadoChart = new Chart(ctx, {
+                    type: 'line', // Cambiado a gráfico de líneas para mejor visualización de tendencia
                     data: {
                         labels: labels,
                         datasets: [
                             {
-                                label: 'Capital',
+                                label: 'Total',
+                                data: totalData,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 3,
+                                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                                pointRadius: 5,
+                                pointHoverRadius: 7,
+                                fill: true,
+                                tension: 0.4, // Curva suavizada
+                                order: 0 // Se dibuja primero (fondo)
+                            },
+                            {
+                                label: 'Capital inicial',
                                 data: capitalData,
-                                backgroundColor: '#007bff',
-                                borderColor: '#0056b3',
-                                borderWidth: 1,
-                                borderRadius: 4
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 2,
+                                borderDash: hayCapitalizacion ? [5, 5] : [], // Línea punteada si hay capitalización
+                                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                fill: false,
+                                order: 2 // Se dibuja al final
                             },
                             {
                                 label: 'Intereses',
                                 data: interesData,
-                                backgroundColor: '#28a745',
-                                borderColor: '#1e7e34',
-                                borderWidth: 1,
-                                borderRadius: 4
+                                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                                borderColor: 'rgba(255, 206, 86, 1)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(255, 206, 86, 1)',
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                fill: false,
+                                order: 1 // Se dibuja en medio
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleFont: {
+                                    size: 16,
+                                    weight: 'bold'
+                                },
+                                bodyFont: {
+                                    size: 14
+                                },
+                                padding: 15,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.raw;
+                                        return `${label}: ${formatter.format(value)}`;
+                                    }
+                                }
+                            },
+                            legend: {
+                                display: false // Ocultamos la leyenda predeterminada ya que tenemos nuestra propia leyenda
+                            },
+                            title: {
+                                display: false
+                            }
+                        },
                         scales: {
                             x: {
-                                stacked: true,
                                 grid: {
                                     display: false
                                 },
                                 ticks: {
                                     font: {
-                                        size: 11
-                                    },
-                                    color: '#666'
+                                        size: 12
+                                    }
                                 }
                             },
                             y: {
-                                stacked: true,
+                                beginAtZero: true,
                                 grid: {
-                                    borderDash: [3, 3],
-                                    color: '#e0e0e0'
+                                    color: 'rgba(200, 200, 200, 0.3)'
                                 },
                                 ticks: {
                                     callback: function(value) {
                                         return formatter.format(value);
                                     },
                                     font: {
-                                        size: 11
-                                    },
-                                    color: '#666'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false // Ocultar leyenda ya que tenemos una personalizada
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(0, 51, 102, 0.8)',
-                                titleFont: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                bodyFont: {
-                                    size: 13
-                                },
-                                padding: 12,
-                                cornerRadius: 6,
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.dataset.label}: ${formatter.format(context.raw)}`;
-                                    },
-                                    afterLabel: function(context) {
-                                        if (context.datasetIndex === 1) { // Solo para el dataset de intereses
-                                            const totalValue = context.parsed._stacked.end;
-                                            return `Total acumulado: ${formatter.format(totalValue)}`;
-                                        }
-                                        return '';
+                                        size: 12
                                     }
                                 }
                             }
@@ -1089,7 +1618,6 @@
                     }
                 });
             }
-
             
             // Función para inicializar tooltips y toasts
             function initializeTooltipsAndToasts() {
@@ -1106,45 +1634,6 @@
                     toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
                     document.body.appendChild(toastContainer);
                 }
-            }
-            
-            // Función para mostrar toasts
-            function showToast(type, message) {
-                const toastContainer = document.getElementById('toast-container');
-                
-                // Crear el toast
-                const toastId = 'toast-' + Date.now();
-                const toastEl = document.createElement('div');
-                toastEl.id = toastId;
-                toastEl.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : 'success'} border-0`;
-                toastEl.setAttribute('role', 'alert');
-                toastEl.setAttribute('aria-live', 'assertive');
-                toastEl.setAttribute('aria-atomic', 'true');
-                
-                // Contenido del toast
-                toastEl.innerHTML = `
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            ${message}
-                        </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                `;
-                
-                // Agregar el toast al contenedor
-                toastContainer.appendChild(toastEl);
-                
-                // Inicializar y mostrar el toast
-                const toast = new bootstrap.Toast(toastEl, {
-                    autohide: true,
-                    delay: 5000
-                });
-                toast.show();
-                
-                // Eliminar el toast del DOM cuando se oculte
-                toastEl.addEventListener('hidden.bs.toast', function() {
-                    toastEl.remove();
-                });
             }
             
             // Función para obtener el valor de una cookie

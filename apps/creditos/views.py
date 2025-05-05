@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from .models import TipoCredito, Credito
-from .utils.calculadora import calcular_amortizacion
+from .utils.calculadora import calcular_amortizacion, calcular_tasa_interes
 from .forms import SimuladorForm
 import json
 import logging
@@ -36,8 +36,8 @@ def calcular_credito(request):
         plazo = int(form.cleaned_data['plazo'])
         metodo_pago = form.cleaned_data['metodo_pago']
         
-        # Obtener la tasa de interés
-        tasa_interes = float(tipo_credito.tasa_interes_referencial)
+        # Calcular la tasa de interés basada en el perfil de riesgo
+        tasa_interes = calcular_tasa_interes(tipo_credito, monto_prestamo, plazo)
         
         # Calcular tabla de amortización
         try:
@@ -45,7 +45,8 @@ def calcular_credito(request):
                 monto_prestamo, 
                 tasa_interes, 
                 plazo, 
-                metodo_pago
+                metodo_pago,
+                tipo_credito  # Pasar el objeto tipo_credito para acceder a las tasas de seguro
             )
         except Exception as e:
             logger.error(f"Error al calcular amortización: {str(e)}")
@@ -74,6 +75,31 @@ def calcular_credito(request):
         total_seguro = sum(cuota['seguro'] for cuota in tabla_amortizacion)
         total_pago = total_capital + total_interes + total_seguro
         
+        # Recopilar los tipos de seguros específicos que existen en la primera cuota
+        primer_cuota = tabla_amortizacion[0] if tabla_amortizacion else {}
+        tipos_seguro = {}
+        for key, value in primer_cuota.items():
+            if key.startswith('seguro_'):
+                tipo = key.replace('seguro_', '')
+                tipos_seguro[tipo] = 0  # Inicializar el total
+        
+        # Calcular totales para cada tipo de seguro
+        totales_por_seguro = {}
+        for tipo in tipos_seguro:
+            totales_por_seguro[tipo] = sum(cuota.get(f'seguro_{tipo}', 0) for cuota in tabla_amortizacion)
+        
+        # Obtener tasas de seguro reales del tipo de crédito
+        seguros_dict = tipo_credito.get_seguros()
+        
+        # Preparar tasas de seguro para enviar al frontend
+        tasas_seguro = {
+            'tasa_interes_aplicada': tasa_interes
+        }
+        
+        # Agregar cada tasa de seguro al diccionario
+        for tipo_seguro, tasa in seguros_dict.items():
+            tasas_seguro[tipo_seguro] = float(tasa) / 100  # Convertir de porcentaje a decimal
+        
         # Retornar respuesta JSON con los resultados
         return JsonResponse({
             'tabla': tabla_amortizacion,
@@ -81,6 +107,9 @@ def calcular_credito(request):
             'total_capital': total_capital,
             'total_seguro': total_seguro,
             'total_pago': total_pago,
+            'totales_por_seguro': totales_por_seguro,
+            'tipos_seguro': list(tipos_seguro.keys()),
+            'tasas_seguro': tasas_seguro
         })
         
     except ValueError as e:
