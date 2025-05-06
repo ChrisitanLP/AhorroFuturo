@@ -1,0 +1,18 @@
+{% extends 'panel_admin/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Cambiar Logo</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+    
+    {% if logo_actual %}
+        <hr>
+        <p>Logo actual:</p>
+        <img src="{{ logo_actual.url }}" alt="Logo Actual" style="max-height: 100px;">
+    {% endif %}
+</div>
+{% endblock %}
