@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     'apps.institucion',
     'apps.creditos',
     'apps.inversiones',
-
+    'apps.panel_admin',
+    
     'crispy_forms',
     'crispy_bootstrap4',
 ]

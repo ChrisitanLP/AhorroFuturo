@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Administrativo</title>
+    <style>
+        body { display: flex; font-family: sans-serif; margin: 0; }
+        .sidebar { width: 200px; background: #333; color: white; padding: 20px; height: 100vh; }
+        .sidebar a { color: white; display: block; padding: 10px 0; text-decoration: none; }
+        .sidebar a:hover { background: #444; }
+        .content { flex-grow: 1; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Panel</h2>
+        <a href="{% url 'configurar_logo' %}">Configurar logo</a>
+        <a href="{% url 'modificar_tasas' %}">Modificar tasas de interés</a>
+        <a href="{% url 'administrar_creditos' %}">Administrar tipos de crédito</a>
+    </div>
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

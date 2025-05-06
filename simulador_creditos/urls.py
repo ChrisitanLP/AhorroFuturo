@@ -10,6 +10,7 @@ urlpatterns = [
     path('institucion/', include('apps.institucion.urls')),
     path('creditos/', include('apps.creditos.urls')),
     path('inversiones/', include('apps.inversiones.urls')),
+    path('panel_admin/', include('apps.panel_admin.urls')),
 ]
 
 if settings.DEBUG:
