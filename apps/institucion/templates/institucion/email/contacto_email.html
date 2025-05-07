@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Mensaje de Contacto - Ahorro Futuro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.7;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f7;
+        }
+        
+        .email-container {
+            max-width: 650px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        
+        /* Encabezado */
+        .header {
+            background: #003366;
+            padding: 28px 30px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 4px solid #ffdd00;
+        }
+        
+        .header-content h1 {
+            color: #fff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        
+        .header-content p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 8px 0 0;
+            font-size: 15px;
+            font-weight: 400;
+        }
+        
+        .logo-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 10px 16px;
+            display: inline-block;
+        }
+        
+        .logo {
+            height: 40px;
+            display: block;
+        }
+        
+        /* Contenido */
+        .content {
+            padding: 35px 30px;
+        }
+        
+        .section-title {
+            color: #003366;
+            margin: 0 0 24px 0;
+            font-size: 20px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #ffdd00;
+        }
+        
+        .message-info {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+        
+        .info-item {
+            margin-bottom: 5px;
+        }
+        
+        .field-label {
+            font-weight: 600;
+            color: #003366;
+            margin-bottom: 6px;
+            display: block;
+            font-size: 14px;
+        }
+        
+        .field-value {
+            margin-bottom: 12px;
+            color: #4a4a4a;
+            word-break: break-word;
+            background-color: #fff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #e0e7ef;
+            font-size: 15px;
+        }
+        
+        .message-content {
+            background-color: #fff8d6;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 12px;
+            border-left: 4px solid #ffdd00;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .message-content p {
+            margin: 0;
+            color: #4a4a4a;
+            font-size: 15px;
+        }
+        
+        /* Pie de página */
+        .footer {
+            background: #eef2f7;
+            padding: 25px 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #e0e7ef;
+        }
+        
+        .footer-logo {
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo img {
+            height: 30px;
+            opacity: 0.85;
+        }
+        
+        .social-icons {
+            margin: 18px 0;
+        }
+        
+        .social-icons a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #003366;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .social-icons a:hover {
+            color: #1a4d80;
+        }
+        
+        .footer-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e7ef;
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        .timestamp {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        /* Elementos adicionales */
+        .notification-badge {
+            background-color: #ffdd00;
+            color: #003366;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        
+        .contact-action {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .btn-respond {
+            display: inline-block;
+            background: #003366;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .btn-respond:hover {
+            background-color: #1a4d80;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 20px 15px;
+                flex-direction: column;
+            }
+            
+            .header-content {
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            
+            .content {
+                padding: 25px 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                grid-gap: 10px;
+            }
+            
+            .message-info, .message-content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="header-content">
+                <h1>Ahorro Futuro</h1>
+                <p>Mensaje de contacto recibido</p>
+            </div>
+            <div class="logo-container">
+                
+            </div>
+        </div>
+        
+        <div class="content">
+            <span class="notification-badge">Nuevo mensaje</span>
+            <h2 class="section-title">Detalles del contacto</h2>
+            
+            <div class="message-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="field-label">Nombre:</div>
+                        <div class="field-value">{{ nombre }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="field-label">Correo electrónico:</div>
+                        <div class="field-value">{{ correo }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="field-label">Teléfono:</div>
+                        <div class="field-value">{{ telefono }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="field-label">Asunto:</div>
+                        <div class="field-value">{{ asunto }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Mensaje recibido</h2>
+            <div class="message-content">
+                <p>{{ mensaje|linebreaks }}</p>
+            </div>
+        
+        </div>
+        
+        <div class="footer">
+            <div class="footer-logo">
+                
+            </div>
+            <p>Soluciones financieras confiables para su futuro</p>
+            <div class="social-icons">
+                <a href="#">Facebook</a> | 
+                <a href="#">Twitter</a> | 
+                <a href="#">LinkedIn</a> | 
+                <a href="#">Instagram</a>
+            </div>
+            <div class="footer-info">
+                <p>© {% now "Y" %} Ahorro Futuro S.A. Todos los derechos reservados.</p>
+                <p>Este correo es confidencial y está dirigido exclusivamente al personal autorizado.</p>
+            </div>
+            <div class="timestamp">
+                Mensaje recibido el: {{ fecha }}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

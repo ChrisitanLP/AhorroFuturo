@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Administrador | Ahorro Futuro{% endblock %}</title>
+    <link rel="icon" href="{% static 'assets/img/Logos/logo_ico.png' %}" type="image/x-icon">
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'styles/page.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/admin.css' %}">
+    
+    <!-- Custom CSS -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <img src="{{ logo|default:'/static/assets/img/Logos/logotipo.png' }}" alt="Ahorro Futuro Logo" id="sidebarLogo">
+            </div>
+            
+            <div class="admin-nav">
+                <!-- Dashboard Section -->
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Principal</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="{% url 'admin_dashboard' %}" class="nav-link active">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Configuración Section -->
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Configuración</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="{% url 'configurar_logo' %}" class="nav-link">
+                                <i class="fas fa-image"></i>
+                                <span>Logo e Imagen</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#configContent">
+                                <i class="fas fa-cog"></i>
+                                <span>Contenido Web</span>
+                            </a>
+                            <div class="collapse submenu" id="configContent">
+                                <a href="{% url 'inicio' %}" class="nav-link">
+                                    <i class="fas fa-home"></i>
+                                    <span>Página Principal</span>
+                                </a>
+                                <a href="{% url 'nosotros' %}" class="nav-link">
+                                    <i class="fas fa-users"></i>
+                                    <span>Nosotros</span>
+                                </a>
+                                <a href="{% url 'contacto' %}" class="nav-link">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Contacto</span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Productos Financieros Section -->
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Productos Financieros</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="{% url 'modificar_tasas' %}" class="nav-link">
+                                <i class="fas fa-percent"></i>
+                                <span>Tasas de Interés</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#productosInversion">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Inversiones</span>
+                            </a>
+                            <div class="collapse submenu" id="productosInversion">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-list"></i>
+                                    <span>Tipos de Inversión</span>
+                                </a>
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-calculator"></i>
+                                    <span>Parámetros Simulador</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#productosCredito">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Créditos</span>
+                            </a>
+                            <div class="collapse submenu" id="productosCredito">
+                                <a href="{% url 'administrar_creditos' %}" class="nav-link">
+                                    <i class="fas fa-list"></i>
+                                    <span>Tipos de Crédito</span>
+                                </a>
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-calculator"></i>
+                                    <span>Parámetros Simulador</span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Clientes Section -->
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Clientes</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-users"></i>
+                                <span>Administrar Clientes</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Informes Section -->
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Informes</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Reportes</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- System Section -->
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Sistema</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-user-shield"></i>
+                                <span>Usuarios Admin</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <button id="toggleSidebar" class="toggle-sidebar">
+                <i class="fas fa-chevron-left" id="toggleIcon"></i>
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="admin-main" id="adminMain">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="breadcrumb-wrapper">
+                    <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+                
+                <div class="header-right">
+                    <div class="dropdown">
+                        <div class="user-dropdown" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-info d-none d-md-block">
+                                <div class="user-name">{{ user.username }}</div>
+                                <div class="user-role">Administrador</div>
+                            </div>
+                            <i class="fas fa-chevron-down ms-2 d-none d-md-block"></i>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+                                    {% csrf_token %}
+                                </form>
+                                <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <div class="container-fluid py-4">
+                {% if messages %}
+                    <div class="toast-container">
+                        {% for message in messages %}
+                        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <i class="fas fa-check-circle me-2"></i> {{ message }}
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                {% block content %}
+                <!-- Dashboard content will go here -->
+                {% endblock %}
+            </div>
+            
+            <!-- Footer -->
+            <footer class="admin-footer">
+                <div>&copy; {% now "Y" %} Ahorro Futuro. Todos los derechos reservados.</div>
+                <div>Panel de Administración v1.2.0</div>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        // Initialize toasts
+        document.addEventListener("DOMContentLoaded", function() {
+            var toasts = document.querySelectorAll('.toast');
+            toasts.forEach(function(toast) {
+                new bootstrap.Toast(toast).show();
+            });
+            
+            // Set active nav link based on current URL
+            const currentUrl = window.location.pathname;
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentUrl) {
+                    link.classList.add('active');
+                    
+                    // Open parent collapse if in submenu
+                    const parent = link.closest('.submenu');
+                    if (parent) {
+                        parent.classList.add('show');
+                        const trigger = document.querySelector(`[data-bs-target="#${parent.id}"]`);
+                        if (trigger) {
+                            trigger.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Toggle sidebar
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const adminSidebar = document.getElementById('adminSidebar');
+        const adminMain = document.getElementById('adminMain');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        toggleSidebar.addEventListener('click', function() {
+            adminSidebar.classList.toggle('collapsed');
+            adminMain.classList.toggle('expanded');
+            
+            // Change icon direction
+            if (adminSidebar.classList.contains('collapsed')) {
+                toggleIcon.classList.remove('fa-chevron-left');
+                toggleIcon.classList.add('fa-chevron-right');
+            } else {
+                toggleIcon.classList.remove('fa-chevron-right');
+                toggleIcon.classList.add('fa-chevron-left');
+            }
+        });
+        
+        // For mobile: show/hide sidebar
+        function toggleMobileSidebar() {
+            adminSidebar.classList.toggle('mobile-open');
+        }
+    </script>
+    
+    <!-- Custom JS -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

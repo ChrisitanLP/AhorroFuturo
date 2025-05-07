@@ -17,25 +17,25 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         # Redireccionar según el tipo de usuario
         user = self.request.user
-        if user.es_admin():
-            return reverse_lazy('admin_dashboard')
+        if user.is_superuser:
+            return reverse_lazy('dashboard')
         else:
-            return reverse_lazy('client_dashboard')
+            return reverse_lazy('inicio')
 
 @login_required
 def dashboard(request):
     # Vista que redirecciona según el tipo de usuario
-    if request.user.es_admin():
-        return redirect('admin_dashboard')
+    if request.user.is_superuser:
+        return redirect('dashboard')
     else:
-        return redirect('client_dashboard')
+        return redirect('inicio')
 
 @login_required
 def admin_dashboard(request):
     # Verificar que solo admins puedan acceder
-    if not request.user.es_admin():
+    if not request.user.is_superuser:
         messages.error(request, "No tienes permisos para acceder a esta sección")
-        return redirect('dashboard')
+        return redirect('inicio')
     
     return render(request, 'autenticacion/admin_dashboard.html')
 
@@ -44,7 +44,7 @@ def client_dashboard(request):
     # Verificar que solo clientes puedan acceder
     if not request.user.es_cliente():
         messages.error(request, "No tienes permisos para acceder a esta sección")
-        return redirect('dashboard')
+        return redirect('inicio')
     
     return render(request, 'autenticacion/client_dashboard.html')
 

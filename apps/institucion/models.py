@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class Institucion(models.Model):
     nombre = models.CharField(max_length=100)
@@ -15,3 +16,20 @@ class Institucion(models.Model):
     class Meta:
         verbose_name = "Institución"
         verbose_name_plural = "Institución"
+
+class ContactoMensaje(models.Model):
+    nombre = models.CharField(max_length=255)
+    correo = models.EmailField()
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+    asunto = models.CharField(max_length=255)
+    mensaje = models.TextField()
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+    leido = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"{self.asunto} - {self.nombre}"
+    
+    class Meta:
+        verbose_name = "Mensaje de contacto"
+        verbose_name_plural = "Mensajes de contacto"
+        ordering = ['-fecha_creacion']
