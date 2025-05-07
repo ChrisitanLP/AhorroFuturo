@@ -54,6 +54,12 @@ def calcular_credito(request):
                 'error': f'Error al calcular la tabla de amortización: {str(e)}'
             }, status=400)
         
+        # Calcular totales
+        total_interes = sum(cuota['interes'] for cuota in tabla_amortizacion)
+        total_capital = sum(cuota['capital'] for cuota in tabla_amortizacion)
+        total_seguro = sum(cuota['seguro'] for cuota in tabla_amortizacion)
+        total_pago = total_capital + total_interes + total_seguro
+
         # Si el usuario está autenticado, guardar la simulación
         if request.user.is_authenticated:
             try:
@@ -63,17 +69,15 @@ def calcular_credito(request):
                     monto_vivienda=monto_vivienda,
                     monto_prestamo=monto_prestamo,
                     plazo=plazo,
-                    metodo_pago=metodo_pago
+                    metodo_pago=metodo_pago,
+                    tasa_interes_aplicada=tasa_interes,
+                    total_interes=total_interes,
+                    total_capital=total_capital,
+                    total_seguro=total_seguro,
+                    total_pago=total_pago
                 )
             except Exception as e:
                 logger.warning(f"No se pudo guardar el crédito: {str(e)}")
-                # Continuar con el cálculo aunque no se pueda guardar
-        
-        # Calcular totales
-        total_interes = sum(cuota['interes'] for cuota in tabla_amortizacion)
-        total_capital = sum(cuota['capital'] for cuota in tabla_amortizacion)
-        total_seguro = sum(cuota['seguro'] for cuota in tabla_amortizacion)
-        total_pago = total_capital + total_interes + total_seguro
         
         # Recopilar los tipos de seguros específicos que existen en la primera cuota
         primer_cuota = tabla_amortizacion[0] if tabla_amortizacion else {}

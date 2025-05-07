@@ -1,0 +1,569 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Administrar Reportes | Ahorro Futuro{% endblock %}
+
+{% block page_title %}Administrar Reportes{% endblock %}
+
+{% block extra_css %}
+<style>
+/* gestor_usuarios.css - Estilos específicos para la gestión de usuarios */
+
+/* Mejoras generales para la sección de gestión de usuarios */
+.users-management-section {
+    margin-bottom: 2rem;
+}
+
+/* Refinamiento de la tarjeta principal */
+.card.shadow-sm {
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 51, 102, 0.08) !important;
+    transition: box-shadow 0.3s ease;
+    padding: 1rem 1.75rem;
+}
+
+.card.shadow-sm:hover {
+    box-shadow: 0 6px 20px rgba(0, 51, 102, 0.12) !important;
+}
+
+/* Cabecera de la tarjeta */
+.card-header {
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid rgba(0, 51, 102, 0.1);
+}
+
+.card-header h5 {
+    color: var(--pichincha-blue);
+    font-size: 1.75rem;
+    letter-spacing: -0.01em;
+}
+
+.card-header i {
+    color: var(--pichincha-blue);
+    font-size: 1.75rem;
+    letter-spacing: -0.01em;
+}
+
+.card-body{
+    padding: 1.9rem 2rem !important;
+}
+
+.btn-yellow {
+    background-color: var(--pichincha-yellow);
+    border: none;
+    color: var(--pichincha-blue);
+    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-yellow:hover {
+    background-color: var(--pichincha-yellow-hover);
+    color: var(--pichincha-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-blue {
+    background-color: var(--pichincha-blue);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 25px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-blue:hover {
+    background-color: var(--pichincha-blue-hover);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Mejoras en las pestañas */
+.nav-tabs {
+    border-bottom: 2px solid rgba(0, 51, 102, 0.1);
+    gap: 0.5rem;
+    padding-bottom: 0;
+}
+
+.nav-tabs .nav-link {
+    color: var(--pichincha-dark-gray);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: rgba(245, 247, 250, 0.8);
+    color: var(--pichincha-light-blue);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--pichincha-blue);
+    background-color: transparent;
+    font-weight: 600;
+}
+
+.nav-tabs .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--pichincha-yellow);
+    border-radius: 3px 3px 0 0;
+}
+
+.nav-tabs .nav-link i {
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Contenido de las pestañas */
+.tab-content {
+    padding: 1.9rem 0rem;
+}
+
+/* Mejoras para las tablas */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead th {
+    background-color: rgba(0, 51, 102, 0.05);
+    color: var(--pichincha-blue);
+    font-weight: 620;
+    padding: 1rem 1rem;
+    font-size: 0.92rem;
+    letter-spacing: 0.03em;
+    border-top: none;
+    border-bottom: 2px solid rgba(0, 51, 102, 0.1);
+    vertical-align: middle;
+    text-transform: uppercase;
+}
+
+.table tbody td {
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(245, 247, 250, 0.7);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Estado de usuarios */
+.badge {
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    border-radius: 30px;
+    letter-spacing: 0.02em;
+}
+
+.badge.bg-success {
+    background-color: rgba(25, 135, 84, 0.15) !important;
+    color: rgb(20, 108, 67);
+}
+
+.badge.bg-danger {
+    background-color: rgba(220, 53, 69, 0.15) !important;
+    color: rgb(176, 42, 55);
+}
+
+/* Botones de acción en la tabla */
+.btn-group .btn-sm {
+    border-radius: 4px;
+    padding: 0.375rem 0.625rem;
+    transition: all 0.2s ease;
+}
+
+.btn-group .btn-sm:hover {
+    transform: translateY(-1px);
+}
+
+.btn-sm i {
+    font-size: 0.875rem;
+}
+
+/* Mensaje para tablas vacías */
+.text-center {
+    padding: 2rem 1rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Tooltips personalizados */
+.tooltip {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.75rem;
+}
+
+.tooltip-inner {
+    background-color: var(--pichincha-blue);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem 0.75rem;
+}
+
+.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--pichincha-blue);
+}
+
+/* Animaciones sutiles */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-pane {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Mejoras para la experiencia en dispositivos móviles */
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .card-header div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .btn-yellow, .btn-blue {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-tabs .nav-link {
+        white-space: nowrap;
+        padding: 0.625rem 1rem;
+    }
+    
+    .table-responsive {
+        border-radius: 6px;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+    
+    .btn-group .btn-sm {
+        flex: 1;
+    }
+}
+
+/* Mejoras para pantallas grandes */
+@media (min-width: 1400px) {
+    .card.shadow-sm {
+        border-radius: 12px;
+    }
+    
+    .card-body {
+        padding: 2rem;
+    }
+    
+    .table thead th {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .table tbody td {
+        padding: 1rem 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-file-alt"></i> Registro de Reportes de Simulación</h5>
+            </div>
+            <div class="card-body">
+                <!-- Tabs para separar por tipo de simulación -->
+                <ul class="nav nav-tabs mb-3" id="reportesTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link nav-option-user {% if tipo_activo == 'todos' or not tipo_activo %}active{% endif %}" 
+                                id="todos-tab" data-bs-toggle="tab" data-bs-target="#todos" 
+                                type="button" role="tab" aria-controls="todos" aria-selected="true">
+                            <i class="fas fa-list"></i> Todos los Reportes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link nav-option-user {% if tipo_activo == 'inversiones' %}active{% endif %}" 
+                                id="inversiones-tab" data-bs-toggle="tab" data-bs-target="#inversiones" 
+                                type="button" role="tab" aria-controls="inversiones" aria-selected="false">
+                            <i class="fas fa-chart-line"></i> Simulaciones de Inversión
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link nav-option-user {% if tipo_activo == 'creditos' %}active{% endif %}" 
+                                id="creditos-tab" data-bs-toggle="tab" data-bs-target="#creditos" 
+                                type="button" role="tab" aria-controls="creditos" aria-selected="false">
+                            <i class="fas fa-home"></i> Simulaciones de Crédito
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="reportesTabsContent">
+                    <!-- Pestaña de Todos los Reportes -->
+                    <div class="tab-pane fade {% if tipo_activo == 'todos' or not tipo_activo %}show active{% endif %}" 
+                         id="todos" role="tabpanel" aria-labelledby="todos-tab">
+                        <!-- Inversiones -->
+                        <h6 class="mt-3 mb-2"><i class="fas fa-chart-line text-primary"></i> Simulaciones de Inversión</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Tipo de Inversión</th>
+                                        <th>Monto</th>
+                                        <th>Plazo (meses)</th>
+                                        <th>Rentabilidad</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inversion in inversiones %}
+                                    <tr>
+                                        <td>{{ inversion.usuario.get_full_name|default:inversion.usuario.username }}</td>
+                                        <td>{{ inversion.tipo_inversion.nombre }}</td>
+                                        <td>{{ inversion.monto_invertido|floatformat:2 }}</td>
+                                        <td>{{ inversion.plazo }}</td>
+                                        <td>{{ inversion.rentabilidad_anual }}%</td>
+                                        <td>{{ inversion.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <a href="{% url 'detalle_reporte_inversion' inversion.id %}" class="btn btn-sm btn-outline-secondary" 
+                                               data-bs-toggle="tooltip" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No hay reportes de inversión registrados.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Créditos -->
+                        <h6 class="mt-4 mb-2"><i class="fas fa-home text-success"></i> Simulaciones de Crédito</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Tipo de Crédito</th>
+                                        <th>Monto Vivienda</th>
+                                        <th>Monto Préstamo</th>
+                                        <th>Plazo (meses)</th>
+                                        <th>Método</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for credito in creditos %}
+                                    <tr>
+                                        <td>{{ credito.usuario.get_full_name|default:credito.usuario.username }}</td>
+                                        <td>{{ credito.tipo_credito.nombre }}</td>
+                                        <td>{{ credito.monto_vivienda|floatformat:2 }}</td>
+                                        <td>{{ credito.monto_prestamo|floatformat:2 }}</td>
+                                        <td>{{ credito.plazo }}</td>
+                                        <td>
+                                            {% if credito.metodo_pago == 'frances' %}
+                                                <span class="badge bg-info">Francés</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Alemán</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ credito.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <a href="{% url 'detalle_reporte_credito' credito.id %}" class="btn btn-sm btn-outline-secondary" 
+                                               data-bs-toggle="tooltip" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">No hay reportes de crédito registrados.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Pestaña de Inversiones -->
+                    <div class="tab-pane fade {% if tipo_activo == 'inversiones' %}show active{% endif %}" 
+                         id="inversiones" role="tabpanel" aria-labelledby="inversiones-tab">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Tipo de Inversión</th>
+                                        <th>Monto</th>
+                                        <th>Plazo (meses)</th>
+                                        <th>Rentabilidad</th>
+                                        <th>Capital Final</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inversion in inversiones %}
+                                    <tr>
+                                        <td>{{ inversion.usuario.get_full_name|default:inversion.usuario.username }}</td>
+                                        <td>{{ inversion.tipo_inversion.nombre }}</td>
+                                        <td>{{ inversion.monto_invertido|floatformat:2 }}</td>
+                                        <td>{{ inversion.plazo }}</td>
+                                        <td>{{ inversion.rentabilidad_anual }}%</td>
+                                        <td>{{ inversion.capital_final|floatformat:2 }}</td>
+                                        <td>{{ inversion.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <a href="{% url 'detalle_reporte_inversion' inversion.id %}" class="btn btn-sm btn-outline-secondary" 
+                                               data-bs-toggle="tooltip" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">No hay reportes de inversión registrados.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Pestaña de Créditos -->
+                    <div class="tab-pane fade {% if tipo_activo == 'creditos' %}show active{% endif %}" 
+                         id="creditos" role="tabpanel" aria-labelledby="creditos-tab">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Tipo de Crédito</th>
+                                        <th>Monto Vivienda</th>
+                                        <th>Monto Préstamo</th>
+                                        <th>Plazo (meses)</th>
+                                        <th>Tasa</th>
+                                        <th>Total a pagar</th>
+                                        <th>Método</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for credito in creditos %}
+                                    <tr>
+                                        <td>{{ credito.usuario.get_full_name|default:credito.usuario.username }}</td>
+                                        <td>{{ credito.tipo_credito.nombre }}</td>
+                                        <td>{{ credito.monto_vivienda|floatformat:2 }}</td>
+                                        <td>{{ credito.monto_prestamo|floatformat:2 }}</td>
+                                        <td>{{ credito.plazo }}</td>
+                                        <td>{{ credito.tasa_interes_aplicada }}%</td>
+                                        <td>{{ credito.total_pago|floatformat:2 }}</td>
+                                        <td>
+                                            {% if credito.metodo_pago == 'frances' %}
+                                                <span class="badge bg-info">Francés</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Alemán</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ credito.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <a href="{% url 'detalle_reporte_credito' credito.id %}" class="btn btn-sm btn-outline-secondary" 
+                                               data-bs-toggle="tooltip" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="10" class="text-center">No hay reportes de crédito registrados.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Inicializar tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+    
+    // Cambiar la URL cuando se cambia de pestaña para mantener el filtro
+    document.querySelectorAll('#reportesTabs button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            const tipo = this.id.replace('-tab', '');
+            const url = new URL(window.location);
+            if (tipo === 'todos') {
+                url.searchParams.delete('tipo');
+            } else {
+                url.searchParams.set('tipo', tipo);
+            }
+            history.pushState({}, '', url);
+        });
+    });
+</script>
+{% endblock %}

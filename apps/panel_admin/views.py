@@ -6,14 +6,21 @@ from .forms import (
     LogoForm, FaviconForm, InfoSitioForm, InfoContactoForm, 
     RedesSocialesForm, InformacionLegalForm, ConfiguracionGeneralForm
 )
+from django.utils import timezone
+from datetime import timedelta
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from apps.autenticacion.models import Usuario
 from apps.autenticacion.forms import RegistroAdminForm, RegistroClienteForm
-from apps.inversiones.models import TipoInversion
+from apps.inversiones.models import TipoInversion, Inversion
 from apps.inversiones.forms import TipoInversionForm
-from apps.creditos.models import TipoCredito
+from apps.creditos.models import TipoCredito, Credito
 from apps.creditos.forms import TipoCreditoForm
+from apps.institucion.models import ContactoMensaje
+import logging
+
+# Configurar el logger para depuración
+logger = logging.getLogger(__name__)
 
 def es_admin(user):
     """Verifica si el usuario es administrador."""
@@ -22,7 +29,82 @@ def es_admin(user):
 @login_required
 @user_passes_test(es_admin)
 def dashboard(request):
-    return render(request, 'panel_admin/dashboard.html')
+    """Vista del dashboard administrativo"""
+    
+    try:
+        # Obtener datos para las tarjetas de estadísticas
+        total_usuarios = Usuario.objects.filter(tipo_usuario='cliente').count()
+        logger.debug(f"Total usuarios clientes: {total_usuarios}")
+        
+        total_creditos = Credito.objects.all().count()
+        logger.debug(f"Total créditos: {total_creditos}")
+        
+        total_inversiones = Inversion.objects.all().count()
+        logger.debug(f"Total inversiones: {total_inversiones}")
+        
+        mensajes_contacto = ContactoMensaje.objects.all().count()
+        logger.debug(f"Total mensajes de contacto: {mensajes_contacto}")
+        
+        mensajes_no_leidos = ContactoMensaje.objects.filter(leido=False).count()
+        logger.debug(f"Mensajes no leídos: {mensajes_no_leidos}")
+        
+        # Obtener datos para gráficos y actividad reciente
+        fecha_limite = timezone.now() - timedelta(days=30)
+        
+        # Actividad reciente (últimos 30 días)
+        mensajes_recientes = ContactoMensaje.objects.filter(
+            fecha_creacion__gte=fecha_limite
+        ).order_by('-fecha_creacion')[:3]
+        logger.debug(f"Mensajes recientes (últimos 30 días): {mensajes_recientes.count()}")
+        
+        creditos_recientes = Credito.objects.filter(
+            fecha_creacion__gte=fecha_limite
+        ).order_by('-fecha_creacion')[:3]
+        logger.debug(f"Créditos recientes (últimos 30 días): {creditos_recientes.count()}")
+        
+        inversiones_recientes = Inversion.objects.filter(
+            fecha_creacion__gte=fecha_limite
+        ).order_by('-fecha_creacion')[:3]
+        logger.debug(f"Inversiones recientes (últimos 30 días): {inversiones_recientes.count()}")
+        
+        # Datos para gráficos
+        mes_actual = timezone.now().month
+        anio_actual = timezone.now().year
+        
+        creditos_mes_actual = Credito.objects.filter(
+            fecha_creacion__month=mes_actual,
+            fecha_creacion__year=anio_actual
+        ).count()
+        logger.debug(f"Créditos del mes actual: {creditos_mes_actual}")
+        
+        inversiones_mes_actual = Inversion.objects.filter(
+            fecha_creacion__month=mes_actual,
+            fecha_creacion__year=anio_actual
+        ).count()
+        logger.debug(f"Inversiones del mes actual: {inversiones_mes_actual}")
+        
+        context = {
+            'total_usuarios': total_usuarios,
+            'total_creditos': total_creditos,
+            'total_inversiones': total_inversiones,
+            'mensajes_contacto': mensajes_contacto,
+            'mensajes_no_leidos': mensajes_no_leidos,
+            'mensajes_recientes': mensajes_recientes,
+            'creditos_recientes': creditos_recientes,
+            'inversiones_recientes': inversiones_recientes,
+            'creditos_mes_actual': creditos_mes_actual,
+            'inversiones_mes_actual': inversiones_mes_actual,
+        }
+        
+        return render(request, 'panel_admin/dashboard.html', context)
+        
+    except Exception as e:
+        logger.error(f"Error en el dashboard: {str(e)}")
+        context = {
+            'error_message': f"Ocurrió un error al cargar el dashboard: {str(e)}"
+        }
+        return render(request, 'panel_admin/dashboard.html', context)
+
 @login_required
 @user_passes_test(es_admin)
 def configuracion_sitio(request):
@@ -473,3 +555,47 @@ def eliminar_tipo_credito(request, credito_id):
     return render(request, 'panel_admin/gestion_creditos/confirmar_eliminar.html', {
         'tipo_credito': tipo_credito,
     })
+
+
+@login_required
+@user_passes_test(es_admin)
+def administrar_reportes(request):
+    """Vista para listar y gestionar reportes de simulaciones."""
+    # Obtener todos los reportes
+    inversiones = Inversion.objects.all().order_by('-fecha_creacion')
+    creditos = Credito.objects.all().order_by('-fecha_creacion')
+    
+    # Filtro por tipo de reporte
+    tipo_reporte = request.GET.get('tipo', 'todos')
+    
+    if tipo_reporte == 'inversiones':
+        creditos = []
+    elif tipo_reporte == 'creditos':
+        inversiones = []
+    
+    return render(request, 'panel_admin/gestor_reportes.html', {
+        'inversiones': inversiones,
+        'creditos': creditos,
+        'tipo_activo': tipo_reporte,
+    })
+
+@login_required
+@user_passes_test(es_admin)
+def detalle_reporte_inversion(request, inversion_id):
+    """Vista para ver detalles de un reporte de inversión específico."""
+    inversion = get_object_or_404(Inversion, id=inversion_id)
+    ganancia = inversion.capital_final - inversion.monto_invertido  # cálculo directo en Python
+    return render(request, 'panel_admin/gestion_reportes/detalle_inversion.html', {
+        'inversion': inversion,
+        'ganancia': ganancia,  # pasamos el valor al template
+    })
+
+@login_required
+@user_passes_test(es_admin)
+def detalle_reporte_credito(request, credito_id):
+    """Vista para ver detalles de un reporte de crédito específico."""
+    credito = get_object_or_404(Credito, id=credito_id)
+    return render(request, 'panel_admin/gestion_reportes/detalle_credito.html', {
+        'credito': credito,
+    })
+

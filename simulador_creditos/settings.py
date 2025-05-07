@@ -31,6 +31,31 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  # para mantener los loggers por defecto
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',  # Puedes poner WARNING o ERROR en producción
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        '__main__': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
+
 LANGUAGE_CODE = 'es'  
 TIME_ZONE = 'America/Guayaquil' 
 USE_I18N = True

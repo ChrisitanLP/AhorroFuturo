@@ -55,5 +55,11 @@ class Credito(models.Model):
     metodo_pago = models.CharField(max_length=10, choices=METODO_CHOICES, default="frances")
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
+    tasa_interes_aplicada = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    total_interes = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    total_capital = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    total_seguro = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    total_pago = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+
     def __str__(self):
         return f"Crédito {self.tipo_credito.nombre} - {self.monto_prestamo}"

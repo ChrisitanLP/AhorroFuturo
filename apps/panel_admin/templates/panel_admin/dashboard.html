@@ -1,6 +1,482 @@
 {% extends 'base_admin.html' %}
+{% load static %}
+
+{% block title %}Dashboard | Ahorro Futuro{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stats-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+    
+    .stats-icon.bg-yellow {
+        background-color: var(--pichincha-yellow);
+        color: var(--pichincha-blue);
+    }
+    
+    .stats-icon.bg-blue {
+        background-color: var(--pichincha-blue);
+        color: white;
+    }
+    
+    .stats-icon.bg-light-blue {
+        background-color: var(--pichincha-light-blue);
+        color: white;
+    }
+    
+    .stats-icon.bg-gray {
+        background-color: var(--pichincha-dark-gray);
+        color: white;
+    }
+    
+    .stats-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 5px 0;
+    }
+    
+    .stats-label {
+        color: var(--pichincha-dark-gray);
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .chart-container {
+        height: 300px;
+        position: relative;
+    }
+    
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #eaeaea;
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+    
+    .activity-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: white;
+    }
+    
+    .activity-info {
+        flex: 1;
+    }
+    
+    .activity-title {
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+    
+    .activity-time {
+        font-size: 12px;
+        color: var(--pichincha-dark-gray);
+    }
+    
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .welcome-banner {
+        background: linear-gradient(135deg, var(--pichincha-blue) 0%, var(--pichincha-light-blue) 100%);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .welcome-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .welcome-pattern {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.05)' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+        z-index: 1;
+    }
+    
+    .welcome-title {
+        color: white;
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    
+    .welcome-subtitle {
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 400;
+        margin-bottom: 20px;
+    }
+    
+    .welcome-actions .btn {
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 500;
+        margin-right: 10px;
+    }
+    
+    .btn-yellow {
+        background-color: var(--pichincha-yellow);
+        color: var(--pichincha-blue);
+        border: none;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-yellow:hover {
+        background-color: var(--pichincha-yellow-hover);
+        color: var(--pichincha-blue-hover);
+    }
+    
+    .btn-outline-light {
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        color: white;
+        background: transparent;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-outline-light:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: white;
+    }
+    
+    .contact-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: rgba(255, 0, 0, 0.2);
+        color: white;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 14px;
+    }
+    
+    .product-card {
+        border-left: 4px solid var(--pichincha-blue);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    
+    .product-info {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .progress {
+        height: 8px;
+        margin-top: 10px;
+        background-color: #e9ecef;
+    }
+    
+    .progress-bar {
+        background-color: var(--pichincha-blue);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<h1>Bienvenido al panel administrativo</h1>
-<p>Selecciona una opción desde el menú.</p>
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <div class="welcome-pattern"></div>
+    <div class="welcome-content">
+        <h2 class="welcome-title">¡Bienvenido, {{ user.username }}!</h2>
+        <p class="welcome-subtitle">Accede al resumen de la actividad en la plataforma Ahorro Futuro.</p>
+        <div class="welcome-actions">
+            <a href="{% url 'administrar_reportes' %}" class="btn btn-yellow">Ver Reportes</a>
+            <a href="{% url 'administrar_usuarios' %}" class="btn btn-outline-light">Gestionar Clientes</a>
+        </div>
+    </div>
+    {% if mensajes_no_leidos > 0 %}
+        <div class="contact-badge">{{ mensajes_no_leidos }} mensajes nuevos</div>
+    {% endif %}
+</div>
+<div class="row g-4 mb-4">
+    <!-- Stats Cards -->
+    <div class="col-md-6 col-xl-3">
+        <div class="stats-card bg-white p-4">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="stats-value text-primary">{{ total_usuarios }}</div>
+                    <div class="stats-label">Usuarios Registrados</div>
+                </div>
+                <div class="stats-icon bg-yellow">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="col-md-6 col-xl-3">
+    <div class="stats-card bg-white p-4">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div class="stats-value">{{ total_creditos }}</div>
+                <div class="stats-label">Simulaciones de Créditos</div>
+            </div>
+            <div class="stats-icon bg-blue">
+                <i class="fas fa-credit-card"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xl-3">
+    <div class="stats-card bg-white p-4">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div class="stats-value">{{ total_inversiones }}</div>
+                <div class="stats-label">Simulaciones de Inversiones</div>
+            </div>
+            <div class="stats-icon bg-light-blue">
+                <i class="fas fa-chart-line"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xl-3">
+    <div class="stats-card bg-white p-4">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div class="stats-value">{{ mensajes_contacto }}</div>
+                <div class="stats-label">Mensajes de Contacto</div>
+            </div>
+            <div class="stats-icon bg-gray">
+                <i class="fas fa-envelope"></i>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="row g-4">
+    <!-- Charts and Statistics -->
+    <div class="col-xl-8">
+        <div class="card mb-4">
+            <div class="card-header panel-header bg-white">
+                <h5 class="card-title m-0">Actividad de Simulaciones</h5>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary active">Mes Actual</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Trimestre</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    <div class="card">
+        <div class="card-header panel-header bg-white">
+            <h5 class="card-title m-0">Productos Financieros Populares</h5>
+            <a href="#" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+        </div>
+        <div class="card-body">
+            <div class="product-card">
+                <div class="product-info">
+                    <h6>Crédito Hipotecario</h6>
+                    <span class="text-primary fw-bold">45%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-info">
+                    <h6>Inversión a Plazo Fijo</h6>
+                    <span class="text-primary fw-bold">32%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 32%" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-info">
+                    <h6>Crédito de Consumo</h6>
+                    <span class="text-primary fw-bold">18%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 18%" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="col-xl-4">
+    <div class="card h-100">
+        <div class="card-header panel-header bg-white">
+            <h5 class="card-title m-0">Actividad Reciente</h5>
+            <a href="#" class="btn btn-sm btn-outline-primary">Ver Todo</a>
+        </div>
+        <div class="card-body">
+            {% if mensajes_recientes %}
+            {% for mensaje in mensajes_recientes %}
+            <div class="activity-item">
+                <div class="activity-icon bg-light-blue">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-title">{{ mensaje.asunto }}</div>
+                    <div class="activity-time">{{ mensaje.nombre }} • {{ mensaje.fecha_creacion|date:"d/m/Y H:i" }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            {% if creditos_recientes %}
+            {% for credito in creditos_recientes %}
+            <div class="activity-item">
+                <div class="activity-icon bg-blue">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-title">Nueva simulación de crédito</div>
+                    <div class="activity-time">
+                        {% if credito.usuario %}
+                        {{ credito.usuario.username }}
+                        {% else %}
+                        Usuario anónimo
+                        {% endif %} 
+                        • {{ credito.fecha_creacion|date:"d/m/Y H:i" }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            {% if inversiones_recientes %}
+            {% for inversion in inversiones_recientes %}
+            <div class="activity-item">
+                <div class="activity-icon bg-yellow">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-title">Nueva simulación de inversión</div>
+                    <div class="activity-time">
+                        {% if inversion.usuario %}
+                        {{ inversion.usuario.username }}
+                        {% else %}
+                        Usuario anónimo
+                        {% endif %} 
+                        • {{ inversion.fecha_creacion|date:"d/m/Y H:i" }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            {% if not mensajes_recientes and not creditos_recientes and not inversiones_recientes %}
+            <div class="text-center py-4">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p>No hay actividad reciente</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Actividad de Simulaciones Chart
+        var ctx = document.getElementById('activityChart').getContext('2d');
+        var activityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                datasets: [{
+                    label: 'Créditos',
+                    data: [12, 19, 15, 17, 22, 24, 20, 25, 28, 29, 32, {{ creditos_mes_actual|default:0 }}],
+                    backgroundColor: 'rgba(0, 51, 102, 0.1)',
+                    borderColor: 'rgba(0, 51, 102, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }, {
+                    label: 'Inversiones',
+                    data: [8, 15, 12, 14, 18, 19, 16, 20, 22, 24, 26, {{ inversiones_mes_actual|default:0 }}],
+                    backgroundColor: 'rgba(255, 221, 0, 0.1)',
+                    borderColor: 'rgba(255, 221, 0, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false,
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            boxWidth: 10,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

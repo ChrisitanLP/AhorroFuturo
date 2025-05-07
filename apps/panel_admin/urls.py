@@ -33,4 +33,9 @@ urlpatterns = [
     path('admin/creditos/crear/', views.crear_tipo_credito, name='crear_tipo_credito'),
     path('admin/creditos/editar/<int:credito_id>/', views.editar_tipo_credito, name='editar_tipo_credito'),
     path('admin/creditos/eliminar/<int:credito_id>/', views.eliminar_tipo_credito, name='eliminar_tipo_credito'),
+
+    # URLs para la gestión de reportes
+    path('admin/reportes/', views.administrar_reportes, name='administrar_reportes'),
+    path('admin/reportes/inversion/<int:inversion_id>/', views.detalle_reporte_inversion, name='detalle_reporte_inversion'),
+    path('admin/reportes/credito/<int:credito_id>/', views.detalle_reporte_credito, name='detalle_reporte_credito'),
 ]

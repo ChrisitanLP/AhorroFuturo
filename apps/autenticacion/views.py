@@ -37,7 +37,7 @@ def admin_dashboard(request):
         messages.error(request, "No tienes permisos para acceder a esta sección")
         return redirect('inicio')
     
-    return render(request, 'autenticacion/admin_dashboard.html')
+    return render(request, 'panel_admin/dashboard.html')
 
 @login_required
 def client_dashboard(request):

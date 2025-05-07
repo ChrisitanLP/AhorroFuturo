@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import TipoInversion, PerfilRiesgo
+from .models import TipoInversion, PerfilRiesgo, Inversion
 from .forms import SimuladorInversionForm
 import json
 import math
@@ -90,6 +90,18 @@ def calcular_inversion(request):
                 'riesgo': tipo.riesgo,
                 'resultados_mensuales': resultados
             }
+
+            if request.user.is_authenticated:
+                Inversion.objects.create(
+                    usuario=request.user,
+                    tipo_inversion=tipo,
+                    monto_invertido=monto,
+                    plazo=plazo_meses,
+                    reinversion_intereses=reinversion,
+                    interes_total=round(interes_total, 2),
+                    capital_final=round(capital_final + (0 if reinversion else interes_total), 2),
+                    rentabilidad_anual=round(rentabilidad_efectiva, 2)
+                )
             
             return JsonResponse({'success': True, 'data': resumen})
         except json.JSONDecodeError:
