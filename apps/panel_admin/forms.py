@@ -1,5 +1,5 @@
 from django import forms
-from .models import ConfiguracionGlobal
+from .models import ConfiguracionGlobal, ConfiguracionLogo
 
 class ConfiguracionGeneralForm(forms.ModelForm):
     class Meta:
@@ -25,11 +25,8 @@ class ConfiguracionGeneralForm(forms.ModelForm):
 
 class LogoForm(forms.ModelForm):
     class Meta:
-        model = ConfiguracionGlobal
+        model = ConfiguracionLogo
         fields = ['logo']
-        widgets = {
-            'logo': forms.FileInput(attrs={'class': 'form-control d-none', 'accept': 'image/*'})
-        }
 
 class FaviconForm(forms.ModelForm):
     class Meta:

@@ -7,6 +7,7 @@ urlpatterns = [
     path('configuracion/', views.configuracion_sitio, name='configuracion_sitio'),
     path('configuracion/logo/', views.guardar_logo, name='guardar_logo'),
     path('configuracion/favicon/', views.guardar_favicon, name='guardar_favicon'),
+    path('configuracion/logo_web/', views.cambiar_logo_web, name='configurar_logo_web'),
     path('configuracion/info-sitio/', views.guardar_info_sitio, name='guardar_info_sitio'),
     path('configuracion/contacto/', views.guardar_contacto, name='guardar_contacto'),
     path('configuracion/redes-sociales/', views.guardar_redes_sociales, name='guardar_redes_sociales'),

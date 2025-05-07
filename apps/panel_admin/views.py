@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import ConfiguracionGlobal
+from .models import ConfiguracionGlobal, ConfiguracionLogo
 from .forms import LogoForm
 from django.http import JsonResponse
 from .forms import (
@@ -267,6 +267,21 @@ def guardar_todo(request):
 
 def modificar_tasas(request):
     return render(request, 'panel_admin/modificar_tasas.html')
+
+def cambiar_logo_web(request):
+    config = ConfiguracionLogo.objects.first()
+    if not config:
+        config = ConfiguracionLogo.objects.create()
+
+    if request.method == 'POST':
+        form = LogoForm(request.POST, request.FILES, instance=config)
+        if form.is_valid():
+            form.save()
+            return redirect('configurar_logo_web')
+    else:
+        form = LogoForm(instance=config)
+
+    return render(request, 'panel_admin/configuracion.html', {'form': form, 'logo_actual': config.logo})
 
 def cambiar_logo(request):
     config = ConfiguracionGlobal.objects.first()

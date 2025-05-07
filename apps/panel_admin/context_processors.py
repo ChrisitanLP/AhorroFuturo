@@ -1,4 +1,4 @@
-from .models import ConfiguracionGlobal
+from .models import ConfiguracionGlobal, ConfiguracionLogo
 
 def configuracion_global(request):
     """
@@ -21,3 +21,7 @@ def configuracion_global(request):
             'logo': None,
             'favicon': None
         }
+    
+def logo_context(request):
+    config = ConfiguracionLogo.objects.first()
+    return {'logo': config.logo.url if config and config.logo else None}
