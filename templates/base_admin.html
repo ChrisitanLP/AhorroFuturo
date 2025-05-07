@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'styles/page.css' %}">
+
     <link rel="stylesheet" href="{% static 'styles/admin.css' %}">
     
     <!-- Custom CSS -->
@@ -44,51 +44,49 @@
                     <h6 class="nav-section-title">Configuración</h6>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="{% url 'configurar_logo' %}" class="nav-link">
+                            <a href="{% url 'configuracion_sitio' %}" class="nav-link">
                                 <i class="fas fa-image"></i>
-                                <span>Logo e Imagen</span>
+                                <span>Recursos</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#configContent">
-                                <i class="fas fa-cog"></i>
-                                <span>Contenido Web</span>
-                            </a>
-                            <div class="collapse submenu" id="configContent">
-                                <a href="{% url 'inicio' %}" class="nav-link">
-                                    <i class="fas fa-home"></i>
-                                    <span>Página Principal</span>
-                                </a>
-                                <a href="{% url 'nosotros' %}" class="nav-link">
-                                    <i class="fas fa-users"></i>
-                                    <span>Nosotros</span>
-                                </a>
-                                <a href="{% url 'contacto' %}" class="nav-link">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>Contacto</span>
-                                </a>
-                            </div>
                         </li>
                     </ul>
                 </div>
                 
+                <div class="nav-section">
+                    <h6 class="nav-section-title">Contenido Web</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="{% url 'inicio' %}" class="nav-link">
+                                <i class="fas fa-home"></i>
+                                <span>Página Principal</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'nosotros' %}" class="nav-link">
+                                <i class="fas fa-users"></i>
+                                <span>Nosotros</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'contacto' %}" class="nav-link">
+                                <i class="fas fa-envelope"></i>
+                                <span>Contacto</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
                 <!-- Productos Financieros Section -->
                 <div class="nav-section">
                     <h6 class="nav-section-title">Productos Financieros</h6>
                     <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a href="{% url 'modificar_tasas' %}" class="nav-link">
-                                <i class="fas fa-percent"></i>
-                                <span>Tasas de Interés</span>
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#productosInversion">
                                 <i class="fas fa-chart-pie"></i>
                                 <span>Inversiones</span>
                             </a>
                             <div class="collapse submenu" id="productosInversion">
-                                <a href="#" class="nav-link">
+                                <a href="{% url 'administrar_inversiones' %}" class="nav-link">
                                     <i class="fas fa-list"></i>
                                     <span>Tipos de Inversión</span>
                                 </a>
@@ -122,7 +120,7 @@
                     <h6 class="nav-section-title">Clientes</h6>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{% url 'administrar_usuarios' %}" class="nav-link">
                                 <i class="fas fa-users"></i>
                                 <span>Administrar Clientes</span>
                             </a>
@@ -138,19 +136,6 @@
                             <a href="#" class="nav-link">
                                 <i class="fas fa-file-alt"></i>
                                 <span>Reportes</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- System Section -->
-                <div class="nav-section">
-                    <h6 class="nav-section-title">Sistema</h6>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-user-shield"></i>
-                                <span>Usuarios Admin</span>
                             </a>
                         </li>
                     </ul>

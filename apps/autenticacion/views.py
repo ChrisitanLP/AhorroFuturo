@@ -25,7 +25,7 @@ class CustomLoginView(LoginView):
 @login_required
 def dashboard(request):
     # Vista que redirecciona según el tipo de usuario
-    if request.user.is_superuser:
+    if request.user.es_admin():
         return redirect('dashboard')
     else:
         return redirect('inicio')
@@ -33,7 +33,7 @@ def dashboard(request):
 @login_required
 def admin_dashboard(request):
     # Verificar que solo admins puedan acceder
-    if not request.user.is_superuser:
+    if not request.user.es_admin():
         messages.error(request, "No tienes permisos para acceder a esta sección")
         return redirect('inicio')
     

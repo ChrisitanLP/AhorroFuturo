@@ -54,6 +54,23 @@ body {
     color: var(--pichincha-blue) !important;
 }
 
+/* Tabla */
+.table thead th {
+    color: var(--pichincha-blue) !important;
+    background-color: #f0f4f8;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
 .nav-link::after {
     content: '';
     position: absolute;
@@ -61,7 +78,7 @@ body {
     height: 2px;
     background-color: var(--pichincha-yellow);
     bottom: 0;
-    color: white;
+    color: var(--pichincha-blue);
     left: 50%;
     transform: translateX(-50%);
     transition: width 0.3s ease;

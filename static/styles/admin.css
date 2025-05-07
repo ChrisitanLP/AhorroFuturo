@@ -3,6 +3,14 @@
     --sidebar-width-collapsed: 70px;
     --header-height: 70px;
     --transition-speed: 0.3s;
+    --pichincha-yellow: #ffdd00;
+    --pichincha-yellow-hover: #f3d300;
+    --pichincha-blue: #003366;
+    --pichincha-blue-hover: #01274d;
+    --pichincha-light-blue: #1a4d80;
+    --pichincha-text: #333333;
+    --pichincha-gray: #f5f7fa;
+    --pichincha-dark-gray: #4a4a4a;
 }
 
 body {
@@ -136,8 +144,32 @@ body {
 }
 
 .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
     color: white !important;
+    border-left-color: var(--pichincha-yellow);
+}
+
+.nav-option-user.active {
+    background-color: #003366 !important;
+    color: #ffdd00 !important;
+    border-left-color: var(--pichincha-yellow);
+    font-weight: 500;
+}
+.nav-option-user.active:hover {
+    background-color: var(--pichincha-blue-hover) !important;
+    border-left-color: var(--pichincha-yellow);
+    font-weight: 500;
+}
+
+.nav-option-user{
+    background-color: #ffdd00 !important;
+    color: #003366 !important;
+    border-left-color: var(--pichincha-yellow);
+    font-weight: 500;
+}
+
+.nav-option-user:hover {
+    background-color: #f3d300 !important;
+    color: #01274d !important;
     border-left-color: var(--pichincha-yellow);
 }
 

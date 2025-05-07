@@ -1,0 +1,933 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --tab-active-color: #0077b6;
+        --tab-hover-color: #90e0ef;
+    }
+    
+    .config-nav .nav-link {
+        color: #495057;
+        border-radius: 0.5rem 0.5rem 0 0;
+        padding: 0.75rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-right: 0.25rem;
+        border: 1px solid #dee2e6;
+        border-bottom: none;
+        position: relative;
+    }
+    
+    .config-nav .nav-link.active {
+        color: var(--tab-active-color);
+        background-color: #fff;
+        border-bottom: 3px solid var(--tab-active-color);
+    }
+    
+    .config-nav .nav-link:hover:not(.active) {
+        background-color: var(--tab-hover-color);
+        color: #212529;
+    }
+    
+    .config-nav .nav-link i {
+        margin-right: 8px;
+    }
+    
+    .config-tab-content {
+        border: 1px solid #dee2e6;
+        border-radius: 0 0.5rem 0.5rem 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .preview-container {
+        background-color: #f8f9fa;
+        border: 1px dashed #ced4da;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .preview-image {
+        max-height: 120px;
+        max-width: 100%;
+    }
+    
+    .upload-btn {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    
+    .form-section {
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        background-color: #fff;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .form-section-title {
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+        color: #343a40;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        color: #495057;
+    }
+    
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+    }
+    
+    .form-control:focus {
+        border-color: var(--tab-active-color);
+        box-shadow: 0 0 0 0.25rem rgba(0, 119, 182, 0.25);
+    }
+    
+    .btn-primary {
+        background-color: var(--tab-active-color);
+        border-color: var(--tab-active-color);
+    }
+    
+    .btn-primary:hover {
+        background-color: #00507a;
+        border-color: #00507a;
+    }
+    
+    .btn-outline-primary {
+        color: var(--tab-active-color);
+        border-color: var(--tab-active-color);
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: var(--tab-active-color);
+        border-color: var(--tab-active-color);
+    }
+    
+    .config-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .config-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .social-icon {
+        font-size: 1.5rem;
+        color: #6c757d;
+        transition: color 0.3s ease;
+    }
+    
+    .social-icon.facebook:hover { color: #3b5998; }
+    .social-icon.twitter:hover { color: #1da1f2; }
+    .social-icon.linkedin:hover { color: #0077b5; }
+    .social-icon.instagram:hover { color: #e4405f; }
+    
+    .custom-file-upload {
+        border: 1px solid #ced4da;
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    
+    .custom-file-upload:hover {
+        background-color: #e9ecef;
+    }
+    
+    .config-header {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .config-header h2 {
+        margin-bottom: 0.5rem;
+        color: #343a40;
+    }
+    
+    .config-header p {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+    
+    .nav-tabs {
+        border-bottom: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="config-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2><i class="fas fa-cogs me-2"></i>Configuración del Sitio</h2>
+                <p>Personaliza la información y apariencia de tu sitio web desde este panel.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    <i class="fas fa-eye me-1"></i>Vista previa
+                </button>
+                <button type="button" class="btn btn-primary" id="saveAllBtn">
+                    <i class="fas fa-save me-1"></i>Guardar todos los cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs config-nav mb-3" id="configTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'general' %}active{% endif %}" 
+        id="general-tab" data-bs-toggle="tab" data-bs-target="#general" 
+        type="button" role="tab" aria-selected="{% if active_tab == 'general' %}true{% else %}false{% endif %}">
+    <i class="fas fa-info-circle"></i>Información General
+</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'logo' %}active{% endif %}" 
+        id="logo-tab" data-bs-toggle="tab" data-bs-target="#logo" 
+        type="button" role="tab" aria-selected="{% if active_tab == 'logo' %}true{% else %}false{% endif %}">
+    <i class="fas fa-image"></i>Logo y Favicon
+</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'contacto' %}active{% endif %}" 
+                    id="contacto-tab" data-bs-toggle="tab" data-bs-target="#contacto" 
+                    type="button" role="tab" aria-selected="{% if active_tab == 'contacto' %}true{% else %}false{% endif %}"
+                <i class="fas fa-address-card"></i>Información de Contacto
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'redes' %}active{% endif %}" 
+                    id="redes-tab" data-bs-toggle="tab" data-bs-target="#redes" 
+                    type="button" role="tab" aria-selected="{% if active_tab|lower == 'redes' %}true{% else %}false{% endif %}"
+                <i class="fas fa-share-alt"></i>Redes Sociales
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'legal' %}active{% endif %}" 
+                    id="legal-tab" data-bs-toggle="tab" data-bs-target="#legal" 
+                    type="button" role="tab" aria-selected="{% if active_tab == 'legal' %}true{% else %}false{% endif %}"
+                <i class="fas fa-gavel"></i>Información Legal
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content config-tab-content p-4 bg-white" id="configTabContent">
+        <!-- General Information Tab -->
+        <div class="tab-pane fade {% if active_tab == 'general' %}show active{% endif %}" id="general" role="tabpanel">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-section">
+                        <h4 class="form-section-title"><i class="fas fa-pencil-alt me-2"></i>Información del Sitio</h4>
+                        <form id="infoSitioForm" action="{% url 'guardar_info_sitio' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_nombre_sitio" class="form-label">Nombre del Sitio</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-signature"></i></span>
+                                    {{ info_sitio_form.nombre_sitio }}
+                                </div>
+                            <div class="mb-3">
+                                <label for="id_logo" class="form-label">Seleccionar nuevo logo</label>
+                                <div class="input-group">
+                                    <label class="custom-file-upload form-control" for="id_logo">
+                                        <i class="fas fa-upload me-2"></i><span id="logoFileName">Seleccionar archivo</span>
+                                    </label>
+                                    {{ logo_form.logo }}
+                                </div>
+                                <div class="form-text">
+                                    Formatos recomendados: PNG, SVG o JPEG. Tamaño máximo: 2MB. Dimensiones recomendadas: 250x80px.
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Guardar Logo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="form-section">
+                        <h4 class="form-section-title"><i class="fas fa-bookmark me-2"></i>Favicon</h4>
+                        <form id="faviconForm" action="{% url 'guardar_favicon' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="text-center mb-4">
+                                <div class="preview-container">
+                                    {% if config.favicon %}
+                                        <img src="{{ config.favicon.url }}" alt="Favicon Actual" class="preview-image" id="faviconPreview" style="max-height: 64px;">
+                                    {% else %}
+                                        <div class="text-muted">
+                                            <i class="fas fa-bookmark fa-3x mb-3"></i>
+                                            <p>No hay favicon cargado</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_favicon" class="form-label">Seleccionar nuevo favicon</label>
+                                <div class="input-group">
+                                    <label class="custom-file-upload form-control" for="id_favicon">
+                                        <i class="fas fa-upload me-2"></i><span id="faviconFileName">Seleccionar archivo</span>
+                                    </label>
+                                    {{ favicon_form.favicon }}
+                                </div>
+                                <div class="form-text">
+                                    Formatos recomendados: ICO, PNG o SVG. Tamaño máximo: 1MB. Dimensiones recomendadas: 32x32px o 16x16px.
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Guardar Favicon
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card config-card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>¿Por qué son importantes los elementos visuales?</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-check-circle text-success me-2"></i>Beneficios de un buen logo:</h6>
+                                    <ul>
+                                        <li>Mejora el reconocimiento de tu marca</li>
+                                        <li>Genera confianza en los usuarios</li>
+                                        <li>Ayuda a diferenciar tu sitio de la competencia</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-check-circle text-success me-2"></i>Beneficios de un favicon:</h6>
+                                    <ul>
+                                        <li>Facilita la identificación en las pestañas del navegador</li>
+                                        <li>Mejora la experiencia al guardar en favoritos</li>
+                                        <li>Refuerza la identidad visual de tu marca</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information Tab -->
+        <div class="tab-pane fade {% if active_tab == 'contacto' %}show active{% endif %}" id="contacto" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-section">
+                        <h4 class="form-section-title"><i class="fas fa-address-card me-2"></i>Información de Contacto</h4>
+                        <form id="contactoForm" action="{% url 'guardar_contacto' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="id_direccion" class="form-label">Dirección</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                            {{ info_contacto_form.direccion }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="id_telefono_principal" class="form-label">Teléfono Principal</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            {{ info_contacto_form.telefono_principal }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="id_telefono_atencion" class="form-label">Teléfono Atención al Cliente</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-headset"></i></span>
+                                            {{ info_contacto_form.telefono_atencion }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="id_horario_atencion" class="form-label">Horario de Atención</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                            {{ info_contacto_form.horario_atencion }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="id_email_contacto" class="form-label">Email de Contacto</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            {{ info_contacto_form.email_contacto }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="id_email_soporte" class="form-label">Email de Soporte</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-life-ring"></i></span>
+                                            {{ info_contacto_form.email_soporte }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_horario_emergencias" class="form-label">Horario para Emergencias</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-exclamation-circle"></i></span>
+                                    {{ info_contacto_form.horario_emergencias }}
+                                </div>
+                            </div>
+                            
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Guardar Información de Contacto
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card config-card h-100">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Recomendaciones</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>La información de contacto aparecerá en:</p>
+                            <ul>
+                                <li>Pie de página del sitio</li>
+                                <li>Página de contacto</li>
+                                <li>Correos electrónicos automáticos</li>
+                            </ul>
+                            <hr>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Asegúrate de proporcionar información de contacto válida y actualizada para mantener la confianza de tus clientes.
+                            </div>
+                            <div class="mt-4">
+                                <h6><i class="fas fa-eye me-2"></i>Vista previa:</h6>
+                                <div class="preview-container p-3 mt-2">
+                                    <div class="contact-item d-flex align-items-start mb-2">
+                                        <i class="fas fa-map-marker-alt me-2 mt-1"></i>
+                                        <div>{{ config.direccion|default:"Av. Principal 123, Ciudad" }}</div>
+                                    </div>
+                                    <div class="contact-item d-flex align-items-start mb-2">
+                                        <i class="fas fa-phone me-2 mt-1"></i>
+                                        <div>{{ config.telefono_principal|default:"(01) 123-4567" }}</div>
+                                    </div>
+                                    <div class="contact-item d-flex align-items-start">
+                                        <i class="fas fa-envelope me-2 mt-1"></i>
+                                        <div>{{ config.email_contacto|default:"contacto@ahorrofuturo.com" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Networks Tab -->
+        <div class="tab-pane fade {% if active_tab == 'redes' %}show active{% endif %}" id="redes" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="form-section">
+                        <h4 class="form-section-title"><i class="fas fa-share-alt me-2"></i>Redes Sociales</h4>
+                        <form id="redesForm" action="{% url 'guardar_redes_sociales' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_facebook" class="form-label">
+                                    <i class="fab fa-facebook me-2 text-primary"></i>Facebook
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">https://</span>
+                                    {{ redes_sociales_form.facebook }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_twitter" class="form-label">
+                                    <i class="fab fa-twitter me-2 text-info"></i>Twitter
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">https://</span>
+                                    {{ redes_sociales_form.twitter }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_instagram" class="form-label">
+                                    <i class="fab fa-instagram me-2 text-danger"></i>Instagram
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">https://</span>
+                                    {{ redes_sociales_form.instagram }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_linkedin" class="form-label">
+                                    <i class="fab fa-linkedin me-2 text-primary"></i>LinkedIn
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">https://</span>
+                                    {{ redes_sociales_form.linkedin }}
+                                </div>
+                            </div>
+                            
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Guardar Redes Sociales
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card config-card h-100">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Importancia de las Redes Sociales</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Las redes sociales son fundamentales para:</p>
+                            <ul>
+                                <li>Conectar con tus clientes</li>
+                                <li>Aumentar la visibilidad de tu negocio</li>
+                                <li>Generar confianza en tu marca</li>
+                                <li>Mejorar el servicio al cliente</li>
+                            </ul>
+                            <hr>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>Estas redes sociales aparecerán en el pie de página y en la página de contacto.
+                            </div>
+                            <div class="mt-4">
+                                <h6><i class="fas fa-eye me-2"></i>Vista previa:</h6>
+                                <div class="d-flex justify-content-center mt-3">
+                                    <a href="#" class="mx-2">
+                                        <i class="fab fa-facebook-f fa-2x social-icon facebook"></i>
+                                    </a>
+                                    <a href="#" class="mx-2">
+                                        <i class="fab fa-twitter fa-2x social-icon twitter"></i>
+                                    </a>
+                                    <a href="#" class="mx-2">
+                                        <i class="fab fa-linkedin-in fa-2x social-icon linkedin"></i>
+                                    </a>
+                                    <a href="#" class="mx-2">
+                                        <i class="fab fa-instagram fa-2x social-icon instagram"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Information Tab -->
+        <div class="tab-pane fade {% if active_tab == 'legal' %}show active{% endif %}" id="legal" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-section">
+                        <h4 class="form-section-title"><i class="fas fa-gavel me-2"></i>Información Legal</h4>
+                        <form id="legalForm" action="{% url 'guardar_info_legal' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_texto_copyright" class="form-label">Texto de Copyright</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="far fa-copyright"></i></span>
+                                    {{ info_legal_form.texto_copyright }}
+                                </div>
+                                <div class="form-text">
+                                    Se mostrará junto al año actual en el pie de página. Ejemplo: © 2025 [Tu texto aquí]
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_texto_legal" class="form-label">Texto Legal Adicional</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-balance-scale"></i></span>
+                                    {{ info_legal_form.texto_legal }}
+                                </div>
+                                <div class="form-text">
+                                    Se mostrará debajo del copyright en el pie de página.
+                                </div>
+                            </div>
+                            
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Guardar Información Legal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card config-card h-100">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Importancia de la Información Legal</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>La información legal en tu sitio web:</p>
+                            <ul>
+                                <li>Protege tu propiedad intelectual</li>
+                                <li>Cumple con requisitos regulatorios</li>
+                                <li>Genera confianza en los usuarios</li>
+                                <li>Es parte de la transparencia de tu negocio</li>
+                            </ul>
+                            <hr>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>No olvides mantener actualizada esta información según los cambios en legislación aplicable.
+                            </div>
+                            <div class="mt-4">
+                                <h6><i class="fas fa-eye me-2"></i>Vista previa:</h6>
+                                <div class="preview-container p-3 mt-2">
+                                    <p class="mb-1">© {% now "Y" %} {{ config.texto_copyright|default:"Todos los derechos reservados." }}</p>
+                                    <p class="small text-muted mb-0">{{ config.texto_legal|default:"Supervisado por la Superintendencia de Banca y Seguros." }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title"><i class="fas fa-eye me-2"></i>Vista Previa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="container p-3">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Encabezado del Sitio</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            {% if config.logo %}
+                                                <img src="{{ config.logo.url }}" alt="Logo" style="height: 50px; margin-right: 15px;">
+                                            {% else %}
+                                                <div style="width: 150px; height: 50px; background-color: #f0f0f0; text-align: center; line-height: 50px; margin-right: 15px;">
+                                                    Logo
+                                                </div>
+                                            {% endif %}
+                                            <h4 class="mb-0">{{ config.nombre_sitio|default:"Ahorro Futuro" }}</h4>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-sm btn-outline-primary me-2">Inicio</button>
+                                            <button class="btn btn-sm btn-outline-primary me-2">Servicios</button>
+                                            <button class="btn btn-sm btn-outline-primary">Contacto</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Información de Contacto</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="d-flex mb-3">
+                                                <div style="width: 40px; text-align: center;">
+                                                    <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h6>Dirección</h6>
+                                                    <p>{{ config.direccion|default:"Av. Principal 123, Ciudad" }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex mb-3">
+                                                <div style="width: 40px; text-align: center;">
+                                                    <i class="fas fa-phone fa-2x text-primary"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h6>Teléfono</h6>
+                                                    <p>{{ config.telefono_principal|default:"(01) 123-4567" }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex mb-3">
+                                                <div style="width: 40px; text-align: center;">
+                                                    <i class="fas fa-envelope fa-2x text-primary"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h6>Email</h6>
+                                                    <p>{{ config.email_contacto|default:"contacto@ahorrofuturo.com" }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex mb-3">
+                                                <div style="width: 40px; text-align: center;">
+                                                    <i class="fas fa-clock fa-2x text-primary"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h6>Horario</h6>
+                                                    <p>{{ config.horario_atencion|default:"Lun-Vie: 9:00 - 17:00" }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Pie de Página</h5>
+                                </div>
+                                <div class="card-body bg-light">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            {% if config.logo %}
+                                                <img src="{{ config.logo.url }}" alt="Logo" style="height: 50px; margin-bottom: 15px;">
+                                            {% else %}
+                                                <div style="width: 150px; height: 50px; background-color: #f0f0f0; text-align: center; line-height: 50px; margin-bottom: 15px;">
+                                                    Logo
+                                                </div>
+                                            {% endif %}
+                                            <p class="small">{{ config.descripcion_corta|default:"Somos una institución financiera comprometida con tu desarrollo económico y bienestar financiero." }}</p>
+                                            <div class="d-flex">
+                                                <a href="#" class="me-2 text-secondary"><i class="fab fa-facebook-f"></i></a>
+                                                <a href="#" class="me-2 text-secondary"><i class="fab fa-twitter"></i></a>
+                                                <a href="#" class="me-2 text-secondary"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href="#" class="text-secondary"><i class="fab fa-instagram"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6>Enlaces Rápidos</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2"><i class="fas fa-chevron-right me-1 small"></i> Sobre Nosotros</li>
+                                                <li class="mb-2"><i class="fas fa-chevron-right me-1 small"></i> Servicios</li>
+                                                <li class="mb-2"><i class="fas fa-chevron-right me-1 small"></i> Contacto</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6>Contacto</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> {{ config.direccion|default:"Av. Principal 123, Ciudad" }}</li>
+                                                <li class="mb-2"><i class="fas fa-phone me-2"></i> {{ config.telefono_principal|default:"(01) 123-4567" }}</li>
+                                                <li class="mb-2"><i class="fas fa-envelope me-2"></i> {{ config.email_contacto|default:"contacto@ahorrofuturo.com" }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <p class="mb-1 small">© {% now "Y" %} {{ config.texto_copyright|default:"Todos los derechos reservados." }}</p>
+                                        <p class="mb-0 small text-muted">{{ config.texto_legal|default:"Supervisado por la Superintendencia de Banca y Seguros." }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejo de carga de imágenes
+        document.getElementById('id_logo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('logoFileName').textContent = file.name;
+                
+                // Vista previa de la imagen
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgPreview = document.getElementById('logoPreview');
+                    if (!imgPreview) {
+                        const container = e.target.closest('form').querySelector('.preview-container');
+                        container.innerHTML = '<img src="' + event.target.result + '" alt="Logo Preview" class="preview-image" id="logoPreview">';
+                    } else {
+                        imgPreview.src = event.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        document.getElementById('id_favicon').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('faviconFileName').textContent = file.name;
+                
+                // Vista previa de la imagen
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgPreview = document.getElementById('faviconPreview');
+                    if (!imgPreview) {
+                        const container = e.target.closest('form').querySelector('.preview-container');
+                        container.innerHTML = '<img src="' + event.target.result + '" alt="Favicon Preview" class="preview-image" id="faviconPreview" style="max-height: 64px;">';
+                    } else {
+                        imgPreview.src = event.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Botón para guardar todos los cambios
+        document.getElementById('saveAllBtn').addEventListener('click', function() {
+            // Recopilar datos de todos los formularios
+            const allForms = document.querySelectorAll('form');
+            const formData = new FormData();
+            
+            allForms.forEach(form => {
+                const formInputs = form.querySelectorAll('input, textarea, select');
+                formInputs.forEach(input => {
+                    if (input.type === 'file' && input.files.length > 0) {
+                        formData.append(input.name, input.files[0]);
+                    } else if (input.type !== 'file') {
+                        formData.append(input.name, input.value);
+                    }
+                });
+            });
+            
+            // Enviar mediante AJAX
+            fetch('{% url "guardar_todo" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Mostrar mensaje de éxito
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                    alertDiv.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>Todos los cambios han sido guardados exitosamente.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('.config-header').appendChild(alertDiv);
+                    
+                    // Remover la alerta después de 5 segundos
+                    setTimeout(() => {
+                        alertDiv.remove();
+                    }, 5000);
+                } else {
+                    // Mostrar mensaje de error
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                    alertDiv.innerHTML = `
+                        <i class="fas fa-exclamation-circle me-2"></i>Ha ocurrido un error al guardar los cambios.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('.config-header').appendChild(alertDiv);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle me-2"></i>Error de conexión. Por favor, inténtelo nuevamente.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.config-header').appendChild(alertDiv);
+            });
+        });
+        
+        // Activar las pestañas si hay una activa en la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('tab');
+        if (activeTab) {
+            const tab = document.querySelector(`#${activeTab}-tab`);
+            if (tab) {
+                const bsTab = new bootstrap.Tab(tab);
+                bsTab.show();
+            }
+        }
+        
+        // Manejar cambios en las pestañas
+        const tabLinks = document.querySelectorAll('.nav-link');
+        tabLinks.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.id.replace('-tab', '');
+                // Actualizar la URL con el parámetro de la pestaña activa
+                const url = new URL(window.location);
+                url.searchParams.set('tab', tabId);
+                window.history.pushState({}, '', url);
+            });
+        });
+        
+        // Función para mostrar mensajes de alerta
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.querySelector('.config-header').appendChild(alertDiv);
+            
+            // Remover la alerta después de 5 segundos
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+        
+        // Manejar mensajes de Django
+        const djangoMessages = document.querySelectorAll('.messages .alert');
+        if (djangoMessages.length > 0) {
+            // Remover mensajes después de 5 segundos
+            setTimeout(() => {
+                djangoMessages.forEach(message => {
+                    message.remove();
+                });
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

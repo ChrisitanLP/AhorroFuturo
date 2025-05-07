@@ -1,0 +1,242 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Eliminar Usuario | Ahorro Futuro{% endblock %}
+
+{% block page_title %}Eliminar Usuario{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Mejoras para la tarjeta de confirmación */
+    .card.shadow-sm {
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0, 51, 102, 0.08) !important;
+        transition: box-shadow 0.3s ease;
+        padding: 1rem 1.75rem;
+    }
+    
+    .card.shadow-sm.border-danger:hover {
+        box-shadow: 0 6px 20px rgba(241, 142, 152, 0.15) !important;
+    }
+    
+    .card-header {
+        padding: 1.5rem 1.75rem;
+        background: #fff;
+        border-bottom: 1px solid rgba(0, 51, 102, 0.1);
+    }
+    
+    .card-header h5 {
+        font-size: 1.75rem;
+        font-weight: 620;
+        letter-spacing: -0.01em;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #003366;
+    }
+    
+    .card-header i {
+        font-size: 1.75rem;
+        color: #003366;
+    }
+    
+    /* Cuerpo de la tarjeta */
+    .card-body.text-center {
+        padding: 2.5rem 2rem !important;
+    }
+    
+    .card-body p {
+        font-size: 1.1rem;
+        color: #4a4a4a;
+        line-height: 1.5;
+    }
+    
+    .card-body p strong {
+        color: #212529;
+        font-weight: 600;
+    }
+    
+    /* Mensaje de advertencia */
+    .text-danger {
+        color: #c82333 !important;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .text-danger i {
+        margin-right: 0.5rem;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            opacity: 0.6;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0.6;
+        }
+    }
+    
+    .d-grid.gap-2 {
+        gap: 1rem !important;
+        margin-top: 2rem;
+    }
+    
+    /* Animación de entrada */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .card.shadow-sm.border-danger {
+        animation: fadeInUp 0.4s ease-out forwards;
+    }
+
+    .btn-outline-blue {
+        border: 2px solid var(--pichincha-blue);
+        color: var(--pichincha-blue);
+        font-weight: 600;
+        padding: 8px 18px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        background-color: transparent;
+    }
+    
+    .btn-outline-blue:hover {
+        background-color: var(--pichincha-blue);
+        color: white;
+    }
+
+    .btn-yellow {
+        background-color: var(--pichincha-yellow);
+        border: none;
+        color: var(--pichincha-blue);
+        font-weight: 600;
+        padding: 12px 18px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .btn-yellow:hover {
+        background-color: var(--pichincha-yellow-hover);
+        color: var(--pichincha-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .btn-outline-secondary {
+        color: #495057;
+        border: 1px solid #ced4da;
+        background-color: transparent;
+    }
+    
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        color: #212529;
+        border-color: #adb5bd;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Mejoras responsive */
+    @media (max-width: 768px) {
+        .card-header. h5 {
+            font-size: 1.2rem;
+        }
+        
+        .card-body.text-center {
+            padding: 2rem 1.5rem !important;
+        }
+        
+        .card-body p {
+            font-size: 1rem;
+        }
+        
+        .btn-outline-secondary, .btn-danger {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .d-md-flex.justify-content-md-center {
+            flex-direction: column-reverse;
+        }
+
+        .user-icon i{
+            color: #01274d;
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 mb-4">
+        <a href="{% url 'administrar_usuarios' %}" class="btn  btn-outline-secondary mb-3">
+            <i class="fas fa-arrow-left"></i> Volver a la lista
+        </a>
+        <div class="card shadow-sm ">
+            <div class="card-header  text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> Confirmar eliminación
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="user-icon mb-4">
+                    {% if usuario.tipo_usuario == 'cliente' %}
+                        <i class="fas fa-user-circle fa-4x opacity-75"></i>
+                    {% else %}
+                        <i class="fas fa-user-shield fa-4x opacity-75"></i>
+                    {% endif %}
+                </div>
+                
+                <p class="mb-4">
+                    ¿Estás seguro de que deseas eliminar al {{ usuario.get_tipo_usuario_display|lower }}
+                    <strong>{{ usuario.get_full_name|default:usuario.username }}</strong>?
+                </p>
+                
+                <div class="alert alert-warning py-3">
+                    <p class="text-danger mb-0">
+                        <i class="fas fa-exclamation-circle"></i> Esta acción no se puede deshacer y eliminará todos los datos asociados.
+                    </p>
+                </div>
+               
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{% url 'administrar_usuarios' %}" class="btn btn-outline-blue">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-yellow">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Añadir una confirmación adicional al hacer clic en el botón de eliminar
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteForm = document.querySelector('form');
+        deleteForm.addEventListener('submit', function(e) {
+            if (!confirm('¿Confirmas que deseas eliminar permanentemente este usuario?')) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}
